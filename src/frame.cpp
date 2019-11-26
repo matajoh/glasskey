@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h>
 
+#include <iostream>
 #include <functional>
 
 namespace
@@ -15,16 +16,26 @@ std::condition_variable g_init_cv;
 
 namespace gk
 {
-Frame::Frame(std::uint16_t rows, std::uint16_t cols, const std::string &title) : m_rows(rows),
+Letter::Letter() : Letter(' ', Colors::White){}
+
+Letter::Letter(char value, const Color &color) : value(value), color(color) {}
+
+Row::Row(Index cols, const Color& color) : std::vector<Letter>(cols)
+{
+    std::fill(begin(), end(), Letter(' ', color));
+}
+
+Frame::Frame(Index rows, Index cols, const std::string &title, const Color &default_color) : m_rows(rows),
                                                                                  m_cols(cols),
                                                                                  m_title(title),
                                                                                  m_running(false),
                                                                                  m_width(cols*COLW),
-                                                                                 m_height(rows*ROWH)
+                                                                                 m_height(rows*ROWH),
+                                                                                 m_default_color(default_color)
 {
     for (auto r = 0; r < rows; ++r)
     {
-        m_grid.emplace_back(cols, ' ');
+        m_grid.emplace_back(cols);
     }
 }
 
@@ -35,7 +46,7 @@ Frame::~Frame()
 
 std::unique_ptr<Frame> Frame::m_instance = nullptr;
 
-Frame &Frame::Init(std::uint16_t rows, std::uint16_t cols, const std::string &title)
+Frame &Frame::Init(Index rows, Index cols, const std::string &title)
 {
     Frame::m_instance = std::make_unique<Frame>(rows, cols, title);
     return Frame::Instance();
@@ -68,21 +79,81 @@ void Frame::stop()
     }
 }
 
-char Frame::get(std::uint16_t row, std::uint16_t col) const
+const Letter &Frame::get(Index row, Index col) const
 {
     return m_grid[row][col];
 }
 
-const std::string &Frame::get(std::uint16_t row) const
+const Row &Frame::get(Index row) const
 {
     return m_grid[row];
 }
 
-Frame &Frame::set(std::uint16_t row, std::uint16_t col, const std::string &values)
+Frame &Frame::set(Index row, Index col, const std::string &values)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
-    std::copy(values.begin(), values.end(), m_grid[row].begin() + col);
+    std::vector<Letter> letters;
+    std::transform(values.begin(), values.end(), std::back_inserter(letters),
+    [this](char value)->Letter{return Letter(value, get_color(value));});
+    std::copy(letters.begin(), letters.end(), m_grid[row].begin() + col);
     return *this;
+}
+
+Frame &Frame::set(Index row, Index col, const std::vector<Letter> &letters)
+{
+    std::lock_guard<std::mutex> guard(m_rows_mutex);
+    std::copy(letters.begin(), letters.end(), m_grid[row].begin() + col);
+    return *this;
+}
+
+Frame &Frame::set(const Rect & rect, char value)
+{
+    std::lock_guard<std::mutex> guard(m_rows_mutex);
+    Letter letter(value, get_color(value));
+    auto top = m_grid.begin() + rect.top;
+    auto bottom = m_grid.begin() + rect.bottom;
+    for(auto row = top; row < bottom; ++row)
+    {
+        auto left = row->begin() + rect.left;
+        auto right = row->begin() + rect.right;
+        std::fill(left, right, letter);
+    }
+    return *this;
+}
+
+Frame &Frame::clear(Index row, Index col, Index cols)
+{
+    std::lock_guard<std::mutex> guard(m_rows_mutex);
+    auto first = m_grid[row].begin() + col;
+    auto last = first + cols;
+    std::fill(first, last, Letter());
+    return *this;
+}
+
+Frame &Frame::clear(const Rect& rect)
+{
+    return set(rect, ' ');
+}
+
+Frame &Frame::map_color(char value, const Color &color)
+{
+    m_color_map[value] = color;
+    return *this;
+}
+
+Frame &Frame::unmap_color(char value)
+{
+    m_color_map.erase(value);
+    return *this;
+}
+
+const Color&Frame::get_color(char value) const
+{
+    if(m_color_map.count(value)){
+        return m_color_map.at(value);
+    }
+
+    return m_default_color;
 }
 
 void Frame::draw_rows()
@@ -91,10 +162,18 @@ void Frame::draw_rows()
     float y = 0;
     for (auto &row : m_grid)
     {
-        glRasterPos2f(0, y);
-        for (auto &col : row)
+        float x = 0;
+        for (auto &letter : row)
         {
-            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, col);
+            if(letter.value == ' '){
+                x += COLW;
+                continue;
+            }
+
+            glColor3f(letter.color.r, letter.color.g, letter.color.b);
+            glRasterPos2f(x, y);
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, letter.value);
+            x += COLW;
         }
 
         y += ROWH;
@@ -142,7 +221,6 @@ void Frame::resize(int width, int height)
 void Frame::display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glColor3d(1.0, 0.0, 0.0);
     set_orthographic_projection(Frame::m_instance->m_width, Frame::m_instance->m_height);
     glPushMatrix();
     glLoadIdentity();

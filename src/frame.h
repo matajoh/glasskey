@@ -3,24 +3,62 @@
 
 #include <cstdint>
 #include <vector>
+#include <array>
 #include <string>
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <map>
+
+#include "color.h"
 
 namespace gk
 {
+
+typedef std::uint16_t Index;
+
+struct Letter {
+    Letter();
+    Letter(char value, const Color& color);
+    char value;
+    Color color;
+};
+
+class Row : public std::vector<Letter> {
+public:
+    Row(Index cols, const Color& color = Colors::White);
+};
+
+struct Rect {
+    Rect(Index left, Index top, Index width, Index height) :
+        left(left),
+        top(top),
+        right(left + width),
+        bottom(top + height)
+    {}
+    Index top;
+    Index left;
+    Index right;
+    Index bottom;
+};
+
 class Frame {
 public:
-    Frame(std::uint16_t rows, std::uint16_t cols, const std::string &title="Title");
+    Frame(Index rows, Index cols, const std::string &title="Title", const Color &default_color = Colors::White);
     ~Frame();
 
     static Frame &Instance();
-    static Frame &Init(std::uint16_t rows, std::uint16_t cols, const std::string &title="Title");
+    static Frame &Init(Index rows, Index cols, const std::string &title="Title");
 
-    Frame& set(std::uint16_t row, std::uint16_t col, const std::string &value);
-    char get(std::uint16_t row, std::uint16_t col) const;
-    const std::string &get(std::uint16_t row) const;
+    Frame& map_color(char value, const Color &color);
+    Frame& unmap_color(char value);
+    Frame& set(Index row, Index col, const std::string &values);
+    Frame& set(Index row, Index col, const std::vector<Letter> &letters);
+    Frame& set(const Rect& rect, char value);
+    Frame& clear(Index row, Index col, Index cols);
+    Frame& clear(const Rect& rect);
+    const Letter &get(Index row, Index col) const;
+    const Row &get(Index row) const;
 
     void start();
     void stop();
@@ -34,10 +72,13 @@ private:
     static std::unique_ptr<Frame> m_instance;
 
     void draw_rows();
+    const Color &get_color(char value) const;
     std::thread m_main_thread;
-    std::vector<std::string> m_grid;
-    const std::uint16_t m_rows;
-    const std::uint16_t m_cols;
+    std::vector<Row> m_grid;
+    std::map<char, Color> m_color_map;
+    Color m_default_color;
+    const Index m_rows;
+    const Index m_cols;
     const std::string m_title;
     int m_width;
     int m_height;
