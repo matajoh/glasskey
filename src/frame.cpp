@@ -20,12 +20,12 @@ Letter::Letter() : Letter(' ', Colors::White){}
 
 Letter::Letter(char value, const Color &color) : value(value), color(color) {}
 
-Row::Row(Index cols, const Color& color) : std::vector<Letter>(cols)
+Row::Row(Size cols, const Color& color) : std::vector<Letter>(cols)
 {
     std::fill(begin(), end(), Letter(' ', color));
 }
 
-Frame::Frame(Index rows, Index cols, const std::string &title, const Color &default_color) : m_rows(rows),
+Frame::Frame(Size rows, Size cols, const std::string &title, const Color &default_color) : m_rows(rows),
                                                                                  m_cols(cols),
                                                                                  m_title(title),
                                                                                  m_running(false),
@@ -46,7 +46,7 @@ Frame::~Frame()
 
 std::unique_ptr<Frame> Frame::m_instance = nullptr;
 
-Frame &Frame::Init(Index rows, Index cols, const std::string &title)
+Frame &Frame::Init(Size rows, Size cols, const std::string &title)
 {
     Frame::m_instance = std::make_unique<Frame>(rows, cols, title);
     return Frame::Instance();
@@ -92,17 +92,33 @@ const Row &Frame::get(Index row) const
 Frame &Frame::set(Index row, Index col, const std::string &values)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
+    if(row < 0){
+        row += m_rows;
+    }
+
+    Index left = fix_range(col, m_cols);
+    Index right = fix_range(col + Size(values.size()), m_cols);
+    auto first = values.begin() + (left - col);
+    auto last = first + (right - left);
     std::vector<Letter> letters;
-    std::transform(values.begin(), values.end(), std::back_inserter(letters),
+    std::transform(first, last, std::back_inserter(letters),
     [this](char value)->Letter{return Letter(value, get_color(value));});
-    std::copy(letters.begin(), letters.end(), m_grid[row].begin() + col);
+    std::copy(letters.begin(), letters.end(), m_grid[row].begin() + left);
     return *this;
 }
 
 Frame &Frame::set(Index row, Index col, const std::vector<Letter> &letters)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
-    std::copy(letters.begin(), letters.end(), m_grid[row].begin() + col);
+    if(row < 0){
+        row += m_rows;
+    }
+
+    Index left = fix_range(col, m_cols);
+    Index right = fix_range(col + Size(letters.size()), m_cols);
+    auto first = letters.begin() + (left - col);
+    auto last = first + (right - left);
+    std::copy(first, last, m_grid[row].begin() + left);
     return *this;
 }
 
@@ -110,22 +126,33 @@ Frame &Frame::set(const Rect & rect, char value)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
     Letter letter(value, get_color(value));
-    auto top = m_grid.begin() + rect.top;
-    auto bottom = m_grid.begin() + rect.bottom;
+    Rect clip = rect.clip(m_cols, m_rows);
+    if(clip.area() == 0){
+        return *this;
+    }
+
+    auto top = m_grid.begin() + clip.top();
+    auto bottom = m_grid.begin() + clip.bottom();
     for(auto row = top; row < bottom; ++row)
     {
-        auto left = row->begin() + rect.left;
-        auto right = row->begin() + rect.right;
+        auto left = row->begin() + clip.left();
+        auto right = row->begin() + clip.right();
         std::fill(left, right, letter);
     }
     return *this;
 }
 
-Frame &Frame::clear(Index row, Index col, Index cols)
+Frame &Frame::clear(Index row, Index col, Size cols)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
-    auto first = m_grid[row].begin() + col;
-    auto last = first + cols;
+    Index left = fix_range(col, m_cols);
+    Index right = fix_range(col + cols, m_cols);
+    if(right - left == 0){
+        return *this;
+    }
+
+    auto first = m_grid[row].begin() + left;
+    auto last = m_grid[row].begin() + right;
     std::fill(first, last, Letter());
     return *this;
 }
@@ -159,7 +186,7 @@ const Color&Frame::get_color(char value) const
 void Frame::draw_rows()
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
-    float y = 0;
+    float y = 15;
     for (auto &row : m_grid)
     {
         float x = 0;
@@ -228,6 +255,16 @@ void Frame::display()
     glPopMatrix();
     reset_perspective_projection();
     glutSwapBuffers();
+}
+
+Size Frame::cols() const
+{
+    return m_cols;
+}
+
+Size Frame::rows() const
+{
+    return m_rows;
 }
 
 void Frame::close()

@@ -1,3 +1,8 @@
+SET( SAMPLES
+  hello_world
+  bouncing_ball
+)
+
 if( WIN32 )
   set( SAMPLES_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG> )
 else()
@@ -10,10 +15,13 @@ set( GLASSKEY_INCLUDE_FOLDERS
 )
 include_directories( ${GLASSKEY_INCLUDE_FOLDERS} )
 
-add_executable( hello_world hello_world.cpp )
-target_link_libraries( hello_world glasskey)
-target_compile_definitions(hello_world PUBLIC FREEGLUT_STATIC)
-install( TARGETS hello_world DESTINATION samples )
+foreach(sample ${SAMPLES})
+  add_executable( ${sample} ${sample}.cpp )
+  target_link_libraries( ${sample} glasskey)
+  target_compile_definitions(${sample} PUBLIC FREEGLUT_STATIC)
+  install( TARGETS ${sample} DESTINATION samples )
+  
+  install( FILES ${sample}.cpp DESTINATION samples )
+endforeach(sample)
 
-install( FILES hello_world.cpp DESTINATION samples )
 install( FILES CMakeLists.txt.in DESTINATION samples RENAME CMakeLists.txt )

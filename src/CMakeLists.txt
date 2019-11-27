@@ -1,11 +1,13 @@
 set( SOURCES
   color.cpp
   frame.cpp
+  rect.cpp
 )
 
 set( HEADERS
   color.h
   frame.h
+  rect.h
 )
 
 add_definitions( -DGLASSKEY_VERSION=${GLASSKEY_VERSION} )

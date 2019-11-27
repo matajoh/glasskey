@@ -11,11 +11,10 @@
 #include <map>
 
 #include "color.h"
+#include "rect.h"
 
 namespace gk
 {
-
-typedef std::uint16_t Index;
 
 struct Letter {
     Letter();
@@ -26,39 +25,28 @@ struct Letter {
 
 class Row : public std::vector<Letter> {
 public:
-    Row(Index cols, const Color& color = Colors::White);
-};
-
-struct Rect {
-    Rect(Index left, Index top, Index width, Index height) :
-        left(left),
-        top(top),
-        right(left + width),
-        bottom(top + height)
-    {}
-    Index top;
-    Index left;
-    Index right;
-    Index bottom;
+    Row(Size cols, const Color& color = Colors::White);
 };
 
 class Frame {
 public:
-    Frame(Index rows, Index cols, const std::string &title="Title", const Color &default_color = Colors::White);
+    Frame(Size rows, Size cols, const std::string &title="Title", const Color &default_color = Colors::White);
     ~Frame();
 
     static Frame &Instance();
-    static Frame &Init(Index rows, Index cols, const std::string &title="Title");
+    static Frame &Init(Size rows, Size cols, const std::string &title="Title");
 
     Frame& map_color(char value, const Color &color);
     Frame& unmap_color(char value);
     Frame& set(Index row, Index col, const std::string &values);
     Frame& set(Index row, Index col, const std::vector<Letter> &letters);
     Frame& set(const Rect& rect, char value);
-    Frame& clear(Index row, Index col, Index cols);
+    Frame& clear(Index row, Index col, Size cols);
     Frame& clear(const Rect& rect);
     const Letter &get(Index row, Index col) const;
     const Row &get(Index row) const;
+    Size rows() const;
+    Size cols() const;
 
     void start();
     void stop();
