@@ -1,5 +1,5 @@
-#ifndef _GK_FRAME_H_
-#define _GK_FRAME_H_
+#ifndef _GK_TEXT_GRID_H_
+#define _GK_TEXT_GRID_H_
 
 #include <cstdint>
 #include <vector>
@@ -28,21 +28,21 @@ public:
     Row(Size cols, const Color& color = Colors::White);
 };
 
-class Frame {
+class TextGrid {
 public:
-    Frame(Size rows, Size cols, const std::string &title="Title", const Color &default_color = Colors::White);
-    ~Frame();
+    TextGrid(Size rows, Size cols, const std::string &title="Title", const Color &default_color = Colors::White);
+    ~TextGrid();
 
-    static Frame &Instance();
-    static Frame &Init(Size rows, Size cols, const std::string &title="Title");
+    static TextGrid &Instance();
+    static TextGrid &Init(Size rows, Size cols, const std::string &title="Title");
 
-    Frame& map_color(char value, const Color &color);
-    Frame& unmap_color(char value);
-    Frame& set(Index row, Index col, const std::string &values);
-    Frame& set(Index row, Index col, const std::vector<Letter> &letters);
-    Frame& set(const Rect& rect, char value);
-    Frame& clear(Index row, Index col, Size cols);
-    Frame& clear(const Rect& rect);
+    TextGrid& map_color(char value, const Color &color);
+    TextGrid& unmap_color(char value);
+    TextGrid& set(Index row, Index col, const std::string &values);
+    TextGrid& set(Index row, Index col, const std::vector<Letter> &letters);
+    TextGrid& set(const Rect& rect, char value);
+    TextGrid& clear(Index row, Index col, Size cols);
+    TextGrid& clear(const Rect& rect);
     const Letter &get(Index row, Index col) const;
     const Row &get(Index row) const;
     Size rows() const;
@@ -57,7 +57,7 @@ private:
     static void display();
     static void main_loop();
     static void close();
-    static std::unique_ptr<Frame> m_instance;
+    static std::unique_ptr<TextGrid> m_instance;
 
     void draw_rows();
     const Color &get_color(char value) const;

@@ -1,4 +1,4 @@
-#include "frame.h"
+#include "text_grid.h"
 #include <GL/glut.h>
 #include <GL/freeglut_ext.h>
 
@@ -25,7 +25,7 @@ Row::Row(Size cols, const Color& color) : std::vector<Letter>(cols)
     std::fill(begin(), end(), Letter(' ', color));
 }
 
-Frame::Frame(Size rows, Size cols, const std::string &title, const Color &default_color) : m_rows(rows),
+TextGrid::TextGrid(Size rows, Size cols, const std::string &title, const Color &default_color) : m_rows(rows),
                                                                                  m_cols(cols),
                                                                                  m_title(title),
                                                                                  m_running(false),
@@ -39,30 +39,30 @@ Frame::Frame(Size rows, Size cols, const std::string &title, const Color &defaul
     }
 }
 
-Frame::~Frame()
+TextGrid::~TextGrid()
 {
     stop();
 }
 
-std::unique_ptr<Frame> Frame::m_instance = nullptr;
+std::unique_ptr<TextGrid> TextGrid::m_instance = nullptr;
 
-Frame &Frame::Init(Size rows, Size cols, const std::string &title)
+TextGrid &TextGrid::Init(Size rows, Size cols, const std::string &title)
 {
-    Frame::m_instance = std::make_unique<Frame>(rows, cols, title);
-    return Frame::Instance();
+    TextGrid::m_instance = std::make_unique<TextGrid>(rows, cols, title);
+    return TextGrid::Instance();
 }
 
-Frame &Frame::Instance()
+TextGrid &TextGrid::Instance()
 {
-    return *Frame::m_instance;
+    return *TextGrid::m_instance;
 }
 
-void Frame::start()
+void TextGrid::start()
 {
     if (!m_running.load())
     {
         m_running.store(true);
-        m_main_thread = std::thread(&Frame::main_loop);
+        m_main_thread = std::thread(&TextGrid::main_loop);
         {
             std::unique_lock<std::mutex> lock(g_init_mutex);
             g_init_cv.wait(lock, []{return g_init;});
@@ -70,7 +70,7 @@ void Frame::start()
     }
 }
 
-void Frame::stop()
+void TextGrid::stop()
 {
     if (m_running.load())
     {
@@ -79,17 +79,17 @@ void Frame::stop()
     }
 }
 
-const Letter &Frame::get(Index row, Index col) const
+const Letter &TextGrid::get(Index row, Index col) const
 {
     return m_grid[row][col];
 }
 
-const Row &Frame::get(Index row) const
+const Row &TextGrid::get(Index row) const
 {
     return m_grid[row];
 }
 
-Frame &Frame::set(Index row, Index col, const std::string &values)
+TextGrid &TextGrid::set(Index row, Index col, const std::string &values)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
     if(row < 0){
@@ -107,7 +107,7 @@ Frame &Frame::set(Index row, Index col, const std::string &values)
     return *this;
 }
 
-Frame &Frame::set(Index row, Index col, const std::vector<Letter> &letters)
+TextGrid &TextGrid::set(Index row, Index col, const std::vector<Letter> &letters)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
     if(row < 0){
@@ -122,7 +122,7 @@ Frame &Frame::set(Index row, Index col, const std::vector<Letter> &letters)
     return *this;
 }
 
-Frame &Frame::set(const Rect & rect, char value)
+TextGrid &TextGrid::set(const Rect & rect, char value)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
     Letter letter(value, get_color(value));
@@ -142,7 +142,7 @@ Frame &Frame::set(const Rect & rect, char value)
     return *this;
 }
 
-Frame &Frame::clear(Index row, Index col, Size cols)
+TextGrid &TextGrid::clear(Index row, Index col, Size cols)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
     Index left = fix_range(col, m_cols);
@@ -157,24 +157,24 @@ Frame &Frame::clear(Index row, Index col, Size cols)
     return *this;
 }
 
-Frame &Frame::clear(const Rect& rect)
+TextGrid &TextGrid::clear(const Rect& rect)
 {
     return set(rect, ' ');
 }
 
-Frame &Frame::map_color(char value, const Color &color)
+TextGrid &TextGrid::map_color(char value, const Color &color)
 {
     m_color_map[value] = color;
     return *this;
 }
 
-Frame &Frame::unmap_color(char value)
+TextGrid &TextGrid::unmap_color(char value)
 {
     m_color_map.erase(value);
     return *this;
 }
 
-const Color&Frame::get_color(char value) const
+const Color&TextGrid::get_color(char value) const
 {
     if(m_color_map.count(value)){
         return m_color_map.at(value);
@@ -183,7 +183,7 @@ const Color&Frame::get_color(char value) const
     return m_default_color;
 }
 
-void Frame::draw_rows()
+void TextGrid::draw_rows()
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
     float y = 15;
@@ -207,7 +207,7 @@ void Frame::draw_rows()
     }
 }
 
-void Frame::refresh()
+void TextGrid::refresh()
 {
     if(m_running.load()){
         glutPostRedisplay();
@@ -232,11 +232,11 @@ void reset_perspective_projection()
     glMatrixMode(GL_MODELVIEW);
 }
 
-void Frame::resize(int width, int height)
+void TextGrid::resize(int width, int height)
 {
     const float ar = (float) width / (float) height;
-    Frame::m_instance->m_width = width;
-    Frame::m_instance->m_height = height;
+    TextGrid::m_instance->m_width = width;
+    TextGrid::m_instance->m_height = height;
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -245,34 +245,34 @@ void Frame::resize(int width, int height)
     glLoadIdentity();
 } 
 
-void Frame::display()
+void TextGrid::display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    set_orthographic_projection(Frame::m_instance->m_width, Frame::m_instance->m_height);
+    set_orthographic_projection(TextGrid::m_instance->m_width, TextGrid::m_instance->m_height);
     glPushMatrix();
     glLoadIdentity();
-    Frame::m_instance->draw_rows();
+    TextGrid::m_instance->draw_rows();
     glPopMatrix();
     reset_perspective_projection();
     glutSwapBuffers();
 }
 
-Size Frame::cols() const
+Size TextGrid::cols() const
 {
     return m_cols;
 }
 
-Size Frame::rows() const
+Size TextGrid::rows() const
 {
     return m_rows;
 }
 
-void Frame::close()
+void TextGrid::close()
 {
-    Frame::m_instance->m_running.store(false);
+    TextGrid::m_instance->m_running.store(false);
 }
 
-void Frame::main_loop()
+void TextGrid::main_loop()
 {
     {
         std::lock_guard<std::mutex> lock(g_init_mutex);
@@ -280,18 +280,18 @@ void Frame::main_loop()
         char *argv[1] = {"dummy.exe"};
         glutInit(&argc, argv);
         g_init = true;
-        glutInitWindowSize(Frame::m_instance->m_width, Frame::m_instance->m_height);
+        glutInitWindowSize(TextGrid::m_instance->m_width, TextGrid::m_instance->m_height);
         glutInitWindowPosition(10, 10);
         glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
         glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
-        glutCreateWindow(Frame::m_instance->m_title.c_str());
-        glutReshapeFunc(&Frame::resize);
-        glutDisplayFunc(&Frame::display);
-        glutCloseFunc(&Frame::close);
+        glutCreateWindow(TextGrid::m_instance->m_title.c_str());
+        glutReshapeFunc(&TextGrid::resize);
+        glutDisplayFunc(&TextGrid::display);
+        glutCloseFunc(&TextGrid::close);
     }
     g_init_cv.notify_one();
 
-    while (Frame::m_instance->m_running.load())
+    while (TextGrid::m_instance->m_running.load())
     {
         glutMainLoopEvent();
     }

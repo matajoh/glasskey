@@ -1,12 +1,12 @@
 set( SOURCES
   color.cpp
-  frame.cpp
+  text_grid.cpp
   rect.cpp
 )
 
 set( HEADERS
   color.h
-  frame.h
+  text_grid.h
   rect.h
 )
 

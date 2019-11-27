@@ -2,15 +2,15 @@
 #include <thread>
 #include <chrono>
 
-#include "frame.h"
+#include "text_grid.h"
 
 int main(int argc, char *argv[])
 {
-    auto &frame = gk::Frame::Init(20, 20, "Test");
-    frame.start();
-    frame.map_color('o', gk::Colors::Red);
-    frame.map_color('l', gk::Colors::Blue);
-    frame.map_color('!', gk::Colors::Green);
+    auto &text_grid = gk::TextGrid::Init(20, 20, "Test");
+    text_grid.start();
+    text_grid.map_color('o', gk::Colors::Red);
+    text_grid.map_color('l', gk::Colors::Blue);
+    text_grid.map_color('!', gk::Colors::Green);
 
     auto frame_time = std::chrono::milliseconds(100);
     std::string text = "Hello world!";
@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
         int row = i % 20;
         int last = (i-1) % 20;
         auto start = std::chrono::system_clock::now();
-        frame.clear(last, 0, static_cast<gk::Index>(text.size()));
-        frame.set(row, 0, text);
-        frame.refresh();
+        text_grid.clear(last, 0, static_cast<gk::Index>(text.size()));
+        text_grid.set(row, 0, text);
+        text_grid.refresh();
         auto duration = std::chrono::system_clock::now() - start;
         if(duration < frame_time)
         {
@@ -28,5 +28,5 @@ int main(int argc, char *argv[])
         }
     }
 
-    frame.stop();
+    text_grid.stop();
 }
