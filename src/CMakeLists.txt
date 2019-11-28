@@ -1,12 +1,13 @@
 set( SOURCES
   color.cpp
   text_grid.cpp
+  glasskey.cpp
   rect.cpp
 )
 
 set( HEADERS
   color.h
-  text_grid.h
+  glasskey.h
   rect.h
 )
 

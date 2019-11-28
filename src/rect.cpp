@@ -62,6 +62,11 @@ Index Rect::bottom() const
     return m_top + m_height;
 }
 
+Rect Rect::move(Index dx, Index dy) const
+{
+    return Rect(m_left + dx, m_top + dy, m_width, m_height);
+}
+
 Rect Rect::clip(Size width, Size height) const
 {
     Index left = fix_range(m_left, width);

@@ -18,7 +18,7 @@ class Rect {
 public:
     Rect(Index left, Index top, Size width, Size height);
 
-    Rect &move(Index left, Index top);
+    Rect move(Index dx, Index dy) const;
     Rect clip(Size width, Size height) const;
 
     Size width() const;

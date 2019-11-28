@@ -1,6 +1,7 @@
 SET( SAMPLES
   hello_world
   bouncing_ball
+  multi_window
 )
 
 if( WIN32 )
