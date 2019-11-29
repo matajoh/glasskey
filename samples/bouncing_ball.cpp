@@ -6,8 +6,8 @@
 class Ball {
 public:
     Ball(const gk::Rect &bounds, float dx, float dy, char value) :
-        m_x(bounds.left()),
-        m_y(bounds.top()),
+        m_x(bounds.left),
+        m_y(bounds.top),
         m_dx(dx),
         m_dy(dy),
         m_bounds(bounds),
@@ -22,8 +22,8 @@ public:
         m_y += m_dy;
         gk::Index left = gk::Index(m_x);
         gk::Index top = gk::Index(m_y);
-        gk::Index right = left + m_bounds.width();
-        gk::Index bottom = top + m_bounds.height();
+        gk::Index right = left + m_bounds.width;
+        gk::Index bottom = top + m_bounds.height;
         gk::Index dx = 0;
         gk::Index dy = 0;
         if(left < 0){
@@ -31,7 +31,7 @@ public:
             m_dx *= -1;
         }
         if(right >= text_grid->cols()){
-            m_x = float(text_grid->cols() - m_bounds.width());
+            m_x = float(text_grid->cols() - m_bounds.width);
             m_dx *= -1;
         }
         if(top < 0){
@@ -39,7 +39,7 @@ public:
             m_dy *= -1;
         }
         if(bottom >= text_grid->rows()){
-            m_y = float(text_grid->rows() - m_bounds.height());
+            m_y = float(text_grid->rows() - m_bounds.height);
             m_dy *= -1;
         }
     }
@@ -47,8 +47,7 @@ public:
     void draw(std::shared_ptr<gk::TextGrid> text_grid)
     {
         text_grid->clear(m_bounds);
-        m_bounds.left() = gk::Index(m_x);
-        m_bounds.top() = gk::Index(m_y);
+        m_bounds = m_bounds.move(gk::Index(m_x), gk::Index(m_y));
         text_grid->draw(m_bounds, m_value);
     }
 

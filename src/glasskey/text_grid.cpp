@@ -102,12 +102,12 @@ TextGrid &TextGrid::draw(const Rect &rect, char value)
         return *this;
     }
 
-    auto top = m_grid.begin() + clip.top();
-    auto bottom = m_grid.begin() + clip.bottom();
+    auto top = m_grid.begin() + clip.top;
+    auto bottom = m_grid.begin() + clip.bottom;
     for (auto row = top; row < bottom; ++row)
     {
-        auto left = row->begin() + clip.left();
-        auto right = row->begin() + clip.right();
+        auto left = row->begin() + clip.left;
+        auto right = row->begin() + clip.right;
         std::fill(left, right, letter);
     }
 

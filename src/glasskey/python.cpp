@@ -9,7 +9,7 @@ using namespace gk;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(_glasskey, m)
+PYBIND11_MODULE(_pyglasskey, m)
 {
     py::class_<Color>(m, "Color")
         .def(py::init<>())
@@ -58,22 +58,15 @@ PYBIND11_MODULE(_glasskey, m)
    
     py::class_<Rect>(m, "Rect")
         .def(py::init<Index, Index, Size, Size>(), "left"_a, "top"_a, "width"_a, "height"_a)
-        .def("move", &Rect::move, "dx"_a, "dy"_a)
+        .def("move", &Rect::move, "left"_a, "top"_a)
+        .def("translate", &Rect::move, "dx"_a, "dy"_a)
         .def("clip", &Rect::clip, "width"_a, "height"_a)
-        .def_property("width",
-            py::overload_cast<>(&Rect::width, py::const_),
-            py::overload_cast<>(&Rect::width))
-        .def_property("height",
-            py::overload_cast<>(&Rect::height, py::const_),
-            py::overload_cast<>(&Rect::height))
-        .def_property("left",
-            py::overload_cast<>(&Rect::left, py::const_),
-            py::overload_cast<>(&Rect::left))
-        .def_property("top",
-            py::overload_cast<>(&Rect::top, py::const_),
-            py::overload_cast<>(&Rect::top))        
-        .def_property_readonly("right", &Rect::right)
-        .def_property_readonly("bottom", &Rect::bottom);
+        .def_readwrite("left", &Rect::left)
+        .def_readwrite("right", &Rect::right)
+        .def_readwrite("top", &Rect::top)
+        .def_readwrite("bottom", &Rect::bottom)
+        .def_readwrite("width", &Rect::width)
+        .def_readwrite("height", &Rect::height);
     
     py::class_<Letter>(m, "Letter")
         .def(py::init<>())

@@ -6,78 +6,35 @@ namespace gk
 {
 
 Rect::Rect(Index left, Index top, Size width, Size height) :
-    m_left(left),
-    m_top(top),
-    m_width(width),
-    m_height(height)
+    left(left),
+    top(top),
+    width(width),
+    height(height),
+    right(left + width),
+    bottom(top + height)
     {}
 
-Index &Rect::left()
+Rect Rect::translate(Index dx, Index dy) const
 {
-    return m_left;
+    return Rect(left + dx, top + dy, width, height);
 }
 
-Index Rect::left() const
+Rect Rect::move(Index left, Index top) const
 {
-    return m_left;
-}
-
-Index &Rect::top()
-{
-    return m_top;
-}
-
-Index Rect::top() const
-{
-    return m_top;
-}
-
-Size &Rect::width()
-{
-    return m_width;
-}
-
-Size Rect::width() const
-{
-    return m_width;
-}
-
-Size &Rect::height()
-{
-    return m_height;
-}
-
-Size Rect::height() const
-{
-    return m_height;
-}
-
-Index Rect::right() const
-{
-    return m_left + m_width;
-}
-
-Index Rect::bottom() const
-{
-    return m_top + m_height;
-}
-
-Rect Rect::move(Index dx, Index dy) const
-{
-    return Rect(m_left + dx, m_top + dy, m_width, m_height);
+    return Rect(left, top, width, height);
 }
 
 Rect Rect::clip(Size width, Size height) const
 {
-    Index left = fix_range(m_left, width);
-    Index top = fix_range(m_top, height);
-    Index right = fix_range(this->right(), width);
-    Index bottom = fix_range(this->bottom(), height);
+    Index left = fix_range(this->left, width);
+    Index top = fix_range(this->top, height);
+    Index right = fix_range(this->right, width);
+    Index bottom = fix_range(this->bottom, height);
     return Rect(left, top, right-left, bottom-top);
 }
 
 std::uint32_t Rect::area() const
 {
-    return static_cast<std::uint32_t>(m_width) * static_cast<std::uint32_t>(m_height);
+    return static_cast<std::uint32_t>(width) * static_cast<std::uint32_t>(height);
 }
 }

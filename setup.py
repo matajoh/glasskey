@@ -51,7 +51,7 @@ class CMakeBuild(build_ext):
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
 
         cfg = 'Debug' if self.debug else 'Release'
-        build_args = ['--config', cfg, '--target', '_glasskey']
+        build_args = ['--config', cfg, '--target', '_pyglasskey']
 
         if platform.system() == "Windows":
             cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
@@ -80,7 +80,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    ext_modules=[CMakeExtension('glasskey._glasskey')],
+    ext_modules=[CMakeExtension('glasskey._pyglasskey')],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

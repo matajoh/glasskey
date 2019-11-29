@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
         left->clear(bounds);
         right->clear(bounds.move(-COLS, 0));
 
-        bounds.left() += dx;
-        if(bounds.right() == 2*COLS || bounds.left() == 0){
+        bounds.left += dx;
+        if(bounds.right == 2*COLS || bounds.left == 0){
             dx *= -1;
         }
 

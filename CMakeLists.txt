@@ -26,6 +26,9 @@ set( BUILD_DOCUMENTATION ON  CACHE BOOL ${BUILD_DOCUMENTATION_DESC} )
 set( BUILD_PYTHON_DESC "Specifies whether to build the python module")
 set( BUILD_PYTHON ON CACHE BOOL ${BUILD_PYTHON_DESC} )
 
+set( BUILD_JULIA_DESC "Specifies whether to build the julia module")
+set( BUILD_JULIA ON CACHE BOOL ${BUILD_JULIA_DESC})
+
 set( WARNINGS_AS_ERRORS OFF )
 
 # ------------------- Detect the system -----------------------
@@ -59,6 +62,8 @@ else()
   set( SYSTEM_NAME "${SYSTEM_NAME}-32bit" )
 endif()
 
+set (CMAKE_CXX_STANDARD 17)
+
 # -------------------- Find packages --------------------------
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
@@ -81,15 +86,16 @@ if( BUILD_PYTHON )
       add_test(NAME PythonTests COMMAND Python3::Interpreter -m pytest test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endif()
   endif()
-  set(PYBIND11_CPP_STANDARD -std=c++14)
   find_package( pybind11 REQUIRED )
 endif()
 
+if( BUILD_JULIA )
+  find_package( JlCxx REQUIRED )
+endif()
 
 # -------------------- Build settings -----------------------------
 
-# use C++11
-set (CMAKE_CXX_STANDARD 11)
+# use C++17
  
 if( MSVC )
   if( WARNINGS_AS_ERRORS )

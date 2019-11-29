@@ -11,34 +11,33 @@ typedef std::uint16_t Size;
 
 inline Index fix_range(Index value, Size max)
 {
-    return std::min(std::max(value, Index(0)), Index(max));
+    if(value < 0){
+        return 0;
+    }
+
+    if(value > max){
+        return max;
+    }
+
+    return value;
 }
 
 class Rect {
 public:
     Rect(Index left, Index top, Size width, Size height);
 
-    Rect move(Index dx, Index dy) const;
+    Rect translate(Index dx, Index dy) const;
+    Rect move(Index left, Index top) const;
     Rect clip(Size width, Size height) const;
 
-    Size width() const;
-    Size &width();
-    Size height() const;
-    Size &height();
-    Index top() const;
-    Index &top();
-    Index left() const;
-    Index &left();
-    Index right() const;
-    Index bottom() const;
+    Size width;
+    Size height;
+    Index top;
+    Index left;
+    Index right;
+    Index bottom;
 
     std::uint32_t area() const;
-
-private:
-    Index m_left;
-    Index m_top;
-    Size m_width;
-    Size m_height;
 };
 }
 

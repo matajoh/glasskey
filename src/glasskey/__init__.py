@@ -1,30 +1,30 @@
 """ glasskey module """
 
-from ._glasskey import init, start, stop, create_grid, destroy_grid, Color,\
+from ._pyglasskey import init, start, stop, create_grid, destroy_grid, Color,\
     Letter, Rect, TextGrid
-from . import _glasskey
+from . import _pyglasskey
 
 class Colors:
     """Some standard colors."""
-    Black = _glasskey.Black
-    White = _glasskey.White
-    Red = _glasskey.Red
-    Maroon = _glasskey.Maroon
-    Pink = _glasskey.Pink
-    Brown = _glasskey.Brown
-    Orange = _glasskey.Orange
-    Coral = _glasskey.Coral
-    Olive = _glasskey.Olive
-    Yellow = _glasskey.Yellow
-    Beige = _glasskey.Beige
-    Lime = _glasskey.Lime
-    Green = _glasskey.Green
-    Mint = _glasskey.Mint
-    Teal = _glasskey.Teal
-    Cyan = _glasskey.Cyan
-    Navy = _glasskey.Navy
-    Blue = _glasskey.Blue
-    Purple = _glasskey.Purple
-    Lavender = _glasskey.Lavender
-    Magenta = _glasskey.Magenta
-    Gray = _glasskey.Gray
+    Black = _pyglasskey.Black
+    White = _pyglasskey.White
+    Red = _pyglasskey.Red
+    Maroon = _pyglasskey.Maroon
+    Pink = _pyglasskey.Pink
+    Brown = _pyglasskey.Brown
+    Orange = _pyglasskey.Orange
+    Coral = _pyglasskey.Coral
+    Olive = _pyglasskey.Olive
+    Yellow = _pyglasskey.Yellow
+    Beige = _pyglasskey.Beige
+    Lime = _pyglasskey.Lime
+    Green = _pyglasskey.Green
+    Mint = _pyglasskey.Mint
+    Teal = _pyglasskey.Teal
+    Cyan = _pyglasskey.Cyan
+    Navy = _pyglasskey.Navy
+    Blue = _pyglasskey.Blue
+    Purple = _pyglasskey.Purple
+    Lavender = _pyglasskey.Lavender
+    Magenta = _pyglasskey.Magenta
+    Gray = _pyglasskey.Gray
