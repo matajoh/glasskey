@@ -1,6 +1,6 @@
 #include "jlcxx/jlcxx.hpp"
 
-#include "glasskey.h"
+#include "glasskey/glasskey.h"
 
 using namespace gk;
 

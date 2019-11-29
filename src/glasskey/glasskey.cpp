@@ -1,4 +1,4 @@
-#include "glasskey.h"
+#include "glasskey/glasskey.h"
 
 #include <atomic>
 #include <thread>

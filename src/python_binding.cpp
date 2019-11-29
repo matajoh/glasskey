@@ -2,7 +2,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 
-#include "glasskey.h"
+#include "glasskey/glasskey.h"
 
 using namespace pybind11::literals;
 using namespace gk;

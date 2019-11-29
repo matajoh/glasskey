@@ -1,7 +1,5 @@
 cmake_minimum_required( VERSION 3.8 )
 
-project( glasskey )
-
 # -------------------- Version --------------------------------
 
 file( STRINGS "VERSION" GLASSKEY_VERSION_FILE )
@@ -16,58 +14,37 @@ list( GET GLASSKEY_VERSION_LIST 2 GLASSKEY_VERSION_REVISION )
 
 set( GLASSKEY_VERSION ${GLASSKEY_VERSION_MAJOR}.${GLASSKEY_VERSION_MINOR}.${GLASSKEY_VERSION_REVISION} )
 
-message("Configure GLASSKEY_VERSION at ${GLASSKEY_VERSION}")
-
 # -------------------- Options --------------------------------
 
+project( glasskey VERSION ${GLASSKEY_VERSION} LANGUAGES CXX )
+
 set( BUILD_DOCUMENTATION_DESC "Specifies whether to build the documentation for the API and XML" )
-set( BUILD_DOCUMENTATION ON  CACHE BOOL ${BUILD_DOCUMENTATION_DESC} )
+set( GLASSKEY_BUILD_DOCUMENTATION ON  CACHE BOOL ${BUILD_DOCUMENTATION_DESC} )
 
 set( BUILD_PYTHON_DESC "Specifies whether to build the python module")
-set( BUILD_PYTHON ON CACHE BOOL ${BUILD_PYTHON_DESC} )
+set( GLASSKEY_BUILD_PYTHON ON CACHE BOOL ${BUILD_PYTHON_DESC} )
 
 set( BUILD_JULIA_DESC "Specifies whether to build the julia module")
-set( BUILD_JULIA ON CACHE BOOL ${BUILD_JULIA_DESC})
+set( GLASSKEY_BUILD_JULIA ON CACHE BOOL ${BUILD_JULIA_DESC})
+
+set( BUILD_SHARED_LIB_DESC "Specifies whether to build the shared library")
+set( GLASSKEY_BUILD_SHARED_LIB ON CACHE BOOL ${BUILD_SHARED_LIB_DESC})
+
+set( BUILD_STATIC_LIB_DESC "Specifies whether to build the static library")
+set( GLASSKEY_BUILD_STATIC_LIB ON CACHE BOOL ${BUILD_STATIC_LIB_DESC})
 
 set( WARNINGS_AS_ERRORS OFF )
 
-# ------------------- Detect the system -----------------------
-
-if( APPLE )
-  set( SYSTEM_NAME "Mac" )
-elseif( UNIX )
-  set( SYSTEM_NAME "Linux" )
-  execute_process(COMMAND lsb_release -is OUTPUT_VARIABLE LSB_ID)
-  execute_process(COMMAND lsb_release -rs OUTPUT_VARIABLE LSB_RELEASE)
-  if( LSB_ID AND LSB_RELEASE )
-    string(STRIP "${LSB_ID}" LSB_ID)
-    string(STRIP "${LSB_RELEASE}" LSB_RELEASE)
-    set( SYSTEM_NAME "${SYSTEM_NAME}-${LSB_ID}-${LSB_RELEASE}")
-  elseif( EXISTS "/etc/debian_version")
-    file( READ /etc/debian_version DEBIAN_VERSION )
-    set( SYSTEM_NAME "${SYSTEM_NAME}-${DEBIAN_VERSION}")
-  elseif( EXISTS "/etc/os-release")
-    execute_process(COMMAND "sed" "-ne" "s/^ID=\"\\?\\([a-z]\\+\\)\"\\?$/\\1/p" "/etc/os-release" OUTPUT_VARIABLE OS_RELEASE_ID OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND "sed" "-ne" "s/^VERSION_ID=\"\\?\\([0-9\\.]\\+\\)\"\\?$/\\1/p" "/etc/os-release" OUTPUT_VARIABLE OS_RELEASE_VERSION_ID OUTPUT_STRIP_TRAILING_WHITESPACE)
-    set( SYSTEM_NAME "${SYSTEM_NAME}-${OS_RELEASE_ID}-${OS_RELEASE_VERSION_ID}")
-  elseif( EXISTS "/etc/redhat-release")
-    set( SYSTEM_NAME "${SYSTEM_NAME}-Redhat")
-  endif()
-elseif( WIN32 )
-  set( SYSTEM_NAME "Windows" )
-endif()
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( SYSTEM_NAME "${SYSTEM_NAME}-64bit" )
-else()
-  set( SYSTEM_NAME "${SYSTEM_NAME}-32bit" )
-endif()
-
 set (CMAKE_CXX_STANDARD 17)
 
-# -------------------- Find packages --------------------------
+IF(WIN32)
+    IF(MSVC)
+        SET( CMAKE_DEBUG_POSTFIX "d" )
+    ENDIF(MSVC)
+endif()
 
-set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
-
+##############################################
+# Declare dependencies
 find_package( freeglut REQUIRED )
 
 if( BUILD_DOCUMENTATION )
@@ -93,45 +70,129 @@ if( BUILD_JULIA )
   find_package( JlCxx REQUIRED )
 endif()
 
-# -------------------- Build settings -----------------------------
+set( SOURCES
+  src/glasskey/color.cpp
+  src/glasskey/text_grid.cpp
+  src/glasskey/glasskey.cpp
+  src/glasskey/rect.cpp
+)
 
-# use C++17
- 
-if( MSVC )
-  if( WARNINGS_AS_ERRORS )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX" )
-  endif()
-  # set the Windows target version to WinXP or later
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WIN32_WINNT=0x0501" )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS" )
-else()
-  set( GLASSKEY_CSHARP_DIR ${CMAKE_BINARY_DIR}/src/CSharpWrapper )
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
-  if( WARNINGS_AS_ERRORS )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
-  else()
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations" ) 
-  endif()  
+##############################################
+# Create target and set properties
+
+if( GLASSKEY_BUILD_SHARED_LIB )
+  add_library( glasskey SHARED ${SOURCES} )
+
+  target_include_directories(glasskey
+    PUBLIC
+      $<INSTALL_INTERFACE:include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src
+  )
+
+  target_link_libraries( glasskey PUBLIC FreeGLUT::freeglut)
 endif()
 
-if( APPLE )
-  add_definitions( -DAPPLE )
-  set( CMAKE_MACOSX_RPATH ON )
+if( GLASSKEY_BUILD_STATIC_LIB )
+  add_library( glasskey_static STATIC ${SOURCES} )
+
+  target_include_directories(glasskey_static
+    PUBLIC
+      $<INSTALL_INTERFACE:include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src
+  )
+
+  target_link_libraries( glasskey_static PUBLIC FreeGLUT::freeglut_static)
 endif()
 
-# -------------------- Walk the subdirectories --------------------
-
-add_subdirectory( src/glasskey )
-add_subdirectory( test )
-add_subdirectory( samples )
-if( BUILD_DOCUMENTATION )
-  add_subdirectory( doc )
+if( BUILD_PYTHON )
+  pybind11_add_module(_pyglasskey src/python_binding.cpp  ${SOURCES} ${HEADERS})
+  target_include_directories(_pyglasskey
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src
+      ${CMAKE_CURRENT_SOURCE_DIR}/include
+  )
+  target_link_libraries( _pyglasskey
+    PUBLIC
+      FreeGLUT::freeglut_static
+  )
 endif()
 
-# -------------------- Package ------------------------------------
+if( BUILD_JULIA )
+  add_library( _jlglasskey SHARED src/julia_binding.cpp ${SOURCES})
+  target_include_directories(_jlglasskey
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src
+      ${CMAKE_CURRENT_SOURCE_DIR}/include
+  )
+  target_link_libraries( _jlglasskey
+    PUBLIC
+      FreeGLUT::freeglut_static
+      JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl
+  )
+endif()
 
-set( CPACK_SYSTEM_NAME ${SYSTEM_NAME} )
-set( CPACK_PACKAGE_VERSION "${GLASSKEY_VERSION}" )
-set( CPACK_GENERATOR "ZIP" )
-set( CPACK_SOURCE_GENERATOR "ZIP" )
-include( CPack )
+##############################################
+# Installation instructions
+
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/glasskey)
+
+if( GLASSKEY_BUILD_SHARED_LIB )
+  install(TARGETS glasskey
+    EXPORT glasskey-targets
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${CMALE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMALE_INSTALL_LIBDIR}
+  )
+endif()
+
+IF(FREEGLUT_BUILD_STATIC_LIBS)
+    INSTALL(TARGETS glasskey_static
+      EXPORT glasskey-targets
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}      
+    )
+ENDIF()
+
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+#Export the targets to a script
+install(EXPORT glasskey-targets
+  FILE
+    glasskeyTargets.cmake
+  NAMESPACE
+    glasskey::
+  DESTINATION
+    ${INSTALL_CONFIGDIR}
+)
+
+#Create a ConfigVersion.cmake file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/glasskeyConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/glasskeyConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/glasskeyConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+#Install the config, configversion and custom find modules
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/glasskeyConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/glasskeyConfigVersion.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+##############################################
+## Exporting from the build tree
+export(EXPORT glasskey-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/glasskeyTargets.cmake NAMESPACE glasskey::)
+
+#Register package in user's package registry
+export(PACKAGE glasskey)

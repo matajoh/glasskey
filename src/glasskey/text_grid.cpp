@@ -1,4 +1,4 @@
-#include "glasskey.h"
+#include "glasskey/glasskey.h"
 
 #include <GL/freeglut_std.h>
 #include <GL/freeglut_ext.h>
