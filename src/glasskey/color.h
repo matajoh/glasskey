@@ -2,6 +2,7 @@
 #define _GK_COLOR_H_
 
 #include <cstdint>
+#include <cmath>
 
 namespace gk
 {
@@ -15,7 +16,7 @@ struct Color
      * \param green Green channel [0,1]
      * \param blue Blue channel [0,1]
      */
-    Color(float red, float green, float blue);
+    Color(std::float_t red, std::float_t green, std::float_t blue);
 
     /** Construct a color object from byte values.
      * \param red Red channel
@@ -38,11 +39,11 @@ struct Color
     bool operator!=(const Color &other) const;
 
     /** The red value [0,1] */
-    float r;
+    std::float_t r;
     /** The green value [0,1] */
-    float g;
+    std::float_t g;
     /** The blue value [0,1] */
-    float b;
+    std::float_t b;
 };
 
 namespace Colors

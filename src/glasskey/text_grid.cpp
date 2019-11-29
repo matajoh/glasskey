@@ -1,6 +1,6 @@
 #include "glasskey.h"
 
-#include <GL/glut.h>
+#include <GL/freeglut_std.h>
 #include <GL/freeglut_ext.h>
 
 #include <iostream>

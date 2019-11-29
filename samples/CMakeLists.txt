@@ -19,7 +19,6 @@ include_directories( ${GLASSKEY_INCLUDE_FOLDERS} )
 foreach(sample ${SAMPLES})
   add_executable( ${sample} ${sample}.cpp )
   target_link_libraries( ${sample} glasskey)
-  target_compile_definitions(${sample} PUBLIC FREEGLUT_STATIC)
   install( TARGETS ${sample} DESTINATION samples )
   
   install( FILES ${sample}.cpp DESTINATION samples )

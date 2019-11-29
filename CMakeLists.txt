@@ -52,8 +52,6 @@ elseif( UNIX )
   endif()
 elseif( WIN32 )
   set( SYSTEM_NAME "Windows" )
-  set( GLUT_ROOT_PATH "C:\\Program Files\\freeglut" CACHE PATH "Path to GLUT root directory")
-  set( OPENGL_LIBRARY_DIR "C:\\Program Files\\freeglut\\lib" CACHE PATH "Path to OpenGL lib directory")
 endif()
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
   set( SYSTEM_NAME "${SYSTEM_NAME}-64bit" )
@@ -65,7 +63,7 @@ endif()
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 
-find_package( GLUT REQUIRED )
+find_package( freeglut REQUIRED )
 
 if( BUILD_DOCUMENTATION )
   find_package( Doxygen REQUIRED )

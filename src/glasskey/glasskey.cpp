@@ -3,7 +3,7 @@
 #include <atomic>
 #include <thread>
 
-#include <GL/glut.h>
+#include <GL/freeglut_std.h>
 #include <GL/freeglut_ext.h>
 
 #include <atomic>
