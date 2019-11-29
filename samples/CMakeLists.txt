@@ -11,7 +11,7 @@ else()
 endif()
 
 set( GLASSKEY_INCLUDE_FOLDERS 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/glasskey
     ${CMAKE_CURRENT_SOURCE_DIR} 
 )
 include_directories( ${GLASSKEY_INCLUDE_FOLDERS} )

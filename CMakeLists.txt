@@ -21,8 +21,10 @@ message("Configure GLASSKEY_VERSION at ${GLASSKEY_VERSION}")
 # -------------------- Options --------------------------------
 
 set( BUILD_DOCUMENTATION_DESC "Specifies whether to build the documentation for the API and XML" )
-
 set( BUILD_DOCUMENTATION ON  CACHE BOOL ${BUILD_DOCUMENTATION_DESC} )
+
+set( BUILD_PYTHON_DESC "Specifies whether to build the python module")
+set( BUILD_PYTHON ON CACHE BOOL ${BUILD_PYTHON_DESC} )
 
 set( WARNINGS_AS_ERRORS OFF )
 
@@ -69,6 +71,22 @@ if( BUILD_DOCUMENTATION )
   find_package( Doxygen REQUIRED )
 endif()
 
+if( BUILD_PYTHON )
+  if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
+    find_package(PythonInterp)
+    if(PYTHONINTERP_FOUND)
+      add_test(NAME PythonTests COMMAND ${PYTHON_EXECUTABLE} -m pytest test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    endif()
+  else()
+    find_package(Python3 COMPONENTS Interpreter)
+    if(Python3_Interpreter_FOUND)
+      add_test(NAME PythonTests COMMAND Python3::Interpreter -m pytest test WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    endif()
+  endif()
+  set(PYBIND11_CPP_STANDARD -std=c++14)
+  find_package( pybind11 REQUIRED )
+endif()
+
 
 # -------------------- Build settings -----------------------------
 
@@ -99,7 +117,7 @@ endif()
 
 # -------------------- Walk the subdirectories --------------------
 
-add_subdirectory( src )
+add_subdirectory( src/glasskey )
 add_subdirectory( test )
 add_subdirectory( samples )
 if( BUILD_DOCUMENTATION )

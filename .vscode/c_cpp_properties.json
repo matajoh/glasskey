@@ -4,7 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/Program Files/freeglut/include"
+                "C:/Program Files/freeglut/include",
+                "C:/Program Files/pybind11/include",
+                "C:/Python36/include"
             ],
             "defines": [
                 "_DEBUG",

@@ -74,7 +74,7 @@ void start();
 
 void stop();
 
-void delete_grid(std::shared_ptr<TextGrid> text_grid);
+void destroy_grid(std::shared_ptr<TextGrid> text_grid);
 
 }
 
