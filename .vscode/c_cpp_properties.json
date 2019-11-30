@@ -8,7 +8,7 @@
                 "C:/Program Files/pybind11/include",
                 "C:/Python36/include",
                 "C:/Program Files/JLCxx/include",
-                "C:/Julia-1.3.0/include/julia"
+                "C:/Julia-1.2.0/include/julia"
             ],
             "defines": [
                 "_DEBUG",

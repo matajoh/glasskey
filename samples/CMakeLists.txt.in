@@ -1,0 +1,16 @@
+cmake_minimum_required( VERSION 3.8 )
+
+find_package(glasskey REQUIRED)
+
+SET( SAMPLES
+  hello_world
+  bouncing_ball
+  multi_window
+)
+
+add_executable( images images.cpp )
+
+foreach(sample ${SAMPLES})
+  add_executable( ${sample} cpp/${sample}.cpp )
+  target_link_libraries( ${sample} glasskey::glasskey_static )
+endforeach(sample)

@@ -24,9 +24,6 @@ set( GLASSKEY_BUILD_DOCUMENTATION ON  CACHE BOOL ${BUILD_DOCUMENTATION_DESC} )
 set( BUILD_PYTHON_DESC "Specifies whether to build the python module")
 set( GLASSKEY_BUILD_PYTHON ON CACHE BOOL ${BUILD_PYTHON_DESC} )
 
-set( BUILD_JULIA_DESC "Specifies whether to build the julia module")
-set( GLASSKEY_BUILD_JULIA ON CACHE BOOL ${BUILD_JULIA_DESC})
-
 set( BUILD_SHARED_LIB_DESC "Specifies whether to build the shared library")
 set( GLASSKEY_BUILD_SHARED_LIB ON CACHE BOOL ${BUILD_SHARED_LIB_DESC})
 
@@ -47,11 +44,11 @@ endif()
 # Declare dependencies
 find_package( freeglut REQUIRED )
 
-if( BUILD_DOCUMENTATION )
+if( GLASSKEY_BUILD_DOCUMENTATION )
   find_package( Doxygen REQUIRED )
 endif()
 
-if( BUILD_PYTHON )
+if( GLASSKEY_BUILD_PYTHON )
   if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
     find_package(PythonInterp)
     if(PYTHONINTERP_FOUND)
@@ -64,10 +61,6 @@ if( BUILD_PYTHON )
     endif()
   endif()
   find_package( pybind11 REQUIRED )
-endif()
-
-if( BUILD_JULIA )
-  find_package( JlCxx REQUIRED )
 endif()
 
 set( SOURCES
@@ -108,7 +101,7 @@ if( GLASSKEY_BUILD_STATIC_LIB )
   target_link_libraries( glasskey_static PUBLIC FreeGLUT::freeglut_static)
 endif()
 
-if( BUILD_PYTHON )
+if( GLASSKEY_BUILD_PYTHON )
   pybind11_add_module(_pyglasskey src/python_binding.cpp  ${SOURCES} ${HEADERS})
   target_include_directories(_pyglasskey
     PRIVATE
@@ -117,19 +110,6 @@ if( BUILD_PYTHON )
   target_link_libraries( _pyglasskey
     PUBLIC
       FreeGLUT::freeglut_static
-  )
-endif()
-
-if( BUILD_JULIA )
-  add_library( _jlglasskey SHARED src/julia_binding.cpp ${SOURCES})
-  target_include_directories(_jlglasskey
-    PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/include
-  )
-  target_link_libraries( _jlglasskey
-    PUBLIC
-      FreeGLUT::freeglut_static
-      JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl
   )
 endif()
 
@@ -143,12 +123,12 @@ if( GLASSKEY_BUILD_SHARED_LIB )
   install(TARGETS glasskey
     EXPORT glasskey-targets
     RUNTIME DESTINATION bin
-    LIBRARY DESTINATION ${CMALE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMALE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   )
 endif()
 
-IF(FREEGLUT_BUILD_STATIC_LIBS)
+IF( GLASSKEY_BUILD_STATIC_LIB )
     INSTALL(TARGETS glasskey_static
       EXPORT glasskey-targets
       LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -195,7 +175,23 @@ export(EXPORT glasskey-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/glasskeyTargets.
 #Register package in user's package registry
 export(PACKAGE glasskey)
 
+
 ##############################################
 ## Add subdirectories
 
 add_subdirectory(samples)
+
+
+##############################################
+## Packaging
+
+set(CPACK_PACKAGE_VENDOR "Matthew Johnson")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An OpenGL library for ASCII display")
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_RESOURCE_FILE_README ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
+set( CPACK_GENERATOR "ZIP" )
+set( CPACK_SOURCE_GENERATOR "ZIP" )
+include(CPack)

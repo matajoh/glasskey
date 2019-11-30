@@ -162,9 +162,6 @@ public:
 private:
     TextGrid(Size rows, Size cols, const std::string &title, const Color &default_color);
 
-    static void resize(int width, int height);
-    static void display();
-
     const Color &get_color(char value) const;
     std::vector<Row> m_grid;
     std::map<char, Color> m_color_map;

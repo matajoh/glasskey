@@ -12,9 +12,9 @@ foreach(sample ${SAMPLES})
       ${CMAKE_CURRENT_SOURCE_DIR}/../../include
   )
   target_link_libraries( ${sample} glasskey_static)
-  install( TARGETS ${sample} DESTINATION samples )
+  install( TARGETS ${sample} DESTINATION samples/bin )
   
-  install( FILES ${sample}.cpp DESTINATION samples )
+  install( FILES cpp/${sample}.cpp DESTINATION samples/cpp )
 endforeach(sample)
 
 install( FILES CMakeLists.txt.in DESTINATION samples RENAME CMakeLists.txt )
