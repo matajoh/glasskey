@@ -1,6 +1,6 @@
 SET( SAMPLES
   hello_world
-  bouncing_ball
+  bouncing_balls
   multi_window
 )
 
