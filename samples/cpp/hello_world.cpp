@@ -2,11 +2,11 @@
 #include <thread>
 #include <chrono>
 
-#include "glasskey.h"
+#include "glasskey/glasskey.h"
 
 int main(int argc, char *argv[])
 {
-    auto text_grid = gk::create_grid(20, 20, "Test");
+    auto text_grid = gk::create_grid(20, 20, "Hello World");
     gk::start();
     text_grid->map_color('o', gk::Colors::Red);
     text_grid->map_color('l', gk::Colors::Blue);

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <functional>
 #include <map>
+#include <sstream>
 
 namespace
 {
@@ -18,6 +19,16 @@ namespace gk
 Letter::Letter() : Letter(' ', Colors::White) {}
 
 Letter::Letter(char value, const Color &color) : value(value), color(color) {}
+
+std::string Letter::to_string() const
+{
+    std::stringstream stream;
+    stream << "Letter(value=" << value
+        << ", color=" << color
+        << ")";
+    
+    return stream.str();
+}
 
 Row::Row(Size cols, const Color &color) : std::vector<Letter>(cols)
 {
@@ -43,6 +54,19 @@ TextGrid::TextGrid(TextGrid &&other) : m_rows(other.m_rows),
                                        m_grid(std::move(other.m_grid)),
                                        m_id(other.m_id)
 {
+}
+
+std::string TextGrid::to_string() const
+{
+    std::stringstream stream;
+    stream << "TextGrid(rows=" << m_rows
+        << ", cols=" << m_cols
+        << ", title=" << m_title
+        << ", default_color=" << m_default_color
+        << ", gl_id=" << m_id
+        << ")";
+    
+    return stream.str();
 }
 
 const Letter &TextGrid::get(Index row, Index col) const

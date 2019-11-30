@@ -1,6 +1,7 @@
 #include "glasskey/glasskey.h"
 
 #include <algorithm>
+#include <sstream>
 
 namespace gk
 {
@@ -31,6 +32,18 @@ Rect Rect::clip(Size width, Size height) const
     Index right = fix_range(this->right, width);
     Index bottom = fix_range(this->bottom, height);
     return Rect(left, top, right-left, bottom-top);
+}
+
+std::string Rect::to_string() const
+{
+    std::stringstream stream;
+    stream << "Rect(left=" << left
+        << ", top=" << top
+        << ", width=" << width
+        << ", height=" << height
+        << ")";
+
+    return stream.str();
 }
 
 std::uint32_t Rect::area() const

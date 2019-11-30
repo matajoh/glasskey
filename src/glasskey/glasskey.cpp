@@ -26,6 +26,28 @@ const int ROWH = 15;
 
 namespace gk
 {
+
+std::ostream &operator<<(std::ostream &os, const Rect &rect)
+{
+    return os << rect.to_string();
+}
+
+std::ostream &operator<<(std::ostream &os, const Color &color)
+{
+    return os << color.to_string();
+}
+
+std::ostream &operator<<(std::ostream &os, const Letter &letter)
+{
+    return os << letter.to_string();
+}
+
+std::ostream &operator<<(std::ostream &os, const TextGrid &grid)
+{
+    return os << grid.to_string();
+}
+
+
 void init(const std::vector<std::string> &args)
 {
     if (!g_init)

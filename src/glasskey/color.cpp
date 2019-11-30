@@ -1,5 +1,6 @@
 #include <cassert>
 #include <limits>
+#include <sstream>
 
 #include "glasskey/glasskey.h"
 
@@ -11,6 +12,17 @@ Color::Color(std::float_t red, std::float_t green, std::float_t blue) : r(red), 
     assert((red >= 0.0 && red <= 1.0) || red == -std::numeric_limits<float>::infinity());
     assert((green >= 0.0 && green <= 1.0) || green == -std::numeric_limits<float>::infinity());
     assert((blue >= 0.0 && blue <= 1.0) || blue == -std::numeric_limits<float>::infinity());
+}
+
+std::string Color::to_string() const
+{
+    std::stringstream stream;
+    stream << "Color(r=" << r
+        << ", g=" << g
+        << ", b=" << b
+        << ")";
+    
+    return stream.str();
 }
 
 Color Color::from_bytes(std::uint8_t red, std::uint8_t green, std::uint8_t blue)

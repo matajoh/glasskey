@@ -17,6 +17,7 @@ PYBIND11_MODULE(_pyglasskey, m)
         .def_readwrite("r", &Color::r)
         .def_readwrite("g", &Color::g)
         .def_readwrite("b", &Color::b)
+        .def("__repr__", &Color::to_string)
         .def(py::self == py::self)
         .def(py::self != py::self);
 
@@ -59,18 +60,20 @@ PYBIND11_MODULE(_pyglasskey, m)
     py::class_<Rect>(m, "Rect")
         .def(py::init<Index, Index, Size, Size>(), "left"_a, "top"_a, "width"_a, "height"_a)
         .def("move", &Rect::move, "left"_a, "top"_a)
-        .def("translate", &Rect::move, "dx"_a, "dy"_a)
+        .def("translate", &Rect::translate, "dx"_a, "dy"_a)
         .def("clip", &Rect::clip, "width"_a, "height"_a)
         .def_readwrite("left", &Rect::left)
         .def_readwrite("right", &Rect::right)
         .def_readwrite("top", &Rect::top)
         .def_readwrite("bottom", &Rect::bottom)
         .def_readwrite("width", &Rect::width)
-        .def_readwrite("height", &Rect::height);
+        .def_readwrite("height", &Rect::height)
+        .def("__repr__", &Rect::to_string);
     
     py::class_<Letter>(m, "Letter")
         .def(py::init<>())
         .def(py::init<char, const Color&>(), "value"_a, "color"_a)
+        .def("__repr__", &Letter::to_string)
         .def_readwrite("value", &Letter::value)
         .def_readwrite("color", &Letter::color);
 
@@ -91,6 +94,7 @@ PYBIND11_MODULE(_pyglasskey, m)
              "row"_a, "col"_a)
         .def("get_row", py::overload_cast<Index>(&TextGrid::get, py::const_),
              "row"_a)
+        .def("__repr__", &TextGrid::to_string)
         .def_property_readonly("rows", &TextGrid::rows)
         .def_property_readonly("cols", &TextGrid::cols)
         .def_property_readonly("title", &TextGrid::title);

@@ -4,21 +4,14 @@ SET( SAMPLES
   multi_window
 )
 
-if( WIN32 )
-  set( SAMPLES_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG> )
-else()
-  set( SAMPLES_FOLDER ${CMAKE_CURRENT_BINARY_DIR} )
-endif()
-
-set( GLASSKEY_INCLUDE_FOLDERS 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../src/glasskey
-    ${CMAKE_CURRENT_SOURCE_DIR} 
-)
-include_directories( ${GLASSKEY_INCLUDE_FOLDERS} )
-
 foreach(sample ${SAMPLES})
-  add_executable( ${sample} ${sample}.cpp )
-  target_link_libraries( ${sample} glasskey)
+  add_executable( ${sample} cpp/${sample}.cpp )
+  target_include_directories( ${sample}
+    PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/../../src
+      ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+  )
+  target_link_libraries( ${sample} glasskey_static)
   install( TARGETS ${sample} DESTINATION samples )
   
   install( FILES ${sample}.cpp DESTINATION samples )

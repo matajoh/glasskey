@@ -2,7 +2,7 @@
 #include <thread>
 #include <chrono>
 
-#include "glasskey.h"
+#include "glasskey/glasskey.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,15 +21,15 @@ int main(int argc, char *argv[])
         auto start = std::chrono::system_clock::now();
 
         left->clear(bounds);
-        right->clear(bounds.move(-COLS, 0));
+        right->clear(bounds.translate(-COLS, 0));
 
-        bounds.left += dx;
+        bounds = bounds.translate(dx, 0);
         if(bounds.right == 2*COLS || bounds.left == 0){
             dx *= -1;
         }
 
         left->draw(bounds, '+');
-        right->draw(bounds.move(-COLS, 0), '+');
+        right->draw(bounds.translate(-COLS, 0), '+');
 
         auto duration = std::chrono::system_clock::now() - start;
         if(duration < frame_time)

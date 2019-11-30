@@ -112,7 +112,6 @@ if( BUILD_PYTHON )
   pybind11_add_module(_pyglasskey src/python_binding.cpp  ${SOURCES} ${HEADERS})
   target_include_directories(_pyglasskey
     PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/src
       ${CMAKE_CURRENT_SOURCE_DIR}/include
   )
   target_link_libraries( _pyglasskey
@@ -125,7 +124,6 @@ if( BUILD_JULIA )
   add_library( _jlglasskey SHARED src/julia_binding.cpp ${SOURCES})
   target_include_directories(_jlglasskey
     PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/src
       ${CMAKE_CURRENT_SOURCE_DIR}/include
   )
   target_link_libraries( _jlglasskey
@@ -196,3 +194,8 @@ export(EXPORT glasskey-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/glasskeyTargets.
 
 #Register package in user's package registry
 export(PACKAGE glasskey)
+
+##############################################
+## Add subdirectories
+
+add_subdirectory(samples)

@@ -50,6 +50,9 @@ struct Color
     std::float_t g;
     /** The blue value [0,1] */
     std::float_t b;
+
+    friend std::ostream &operator<<(std::ostream &os, const Color &grid);
+    std::string to_string() const;
 };
 
 namespace Colors
@@ -96,9 +99,8 @@ inline Index fix_range(Index value, Size max)
     return value;
 }
 
-class Rect
+struct Rect
 {
-public:
     Rect(Index left, Index top, Size width, Size height);
 
     Rect translate(Index dx, Index dy) const;
@@ -113,6 +115,8 @@ public:
     Index bottom;
 
     std::uint32_t area() const;
+
+    std::string to_string() const;
 };
 
 struct Letter
@@ -121,6 +125,7 @@ struct Letter
     Letter(char value, const Color &color);
     char value;
     Color color;
+    std::string to_string() const;
 };
 
 class Row : public std::vector<Letter>
@@ -150,7 +155,8 @@ public:
     int id() const;
     bool is_dirty() const;
     void draw_rows();
-
+    std::string to_string() const;
+    
     friend std::shared_ptr<TextGrid> create_grid(Size rows, Size cols, const std::string &title = "Title", const Color &default_color = Colors::White);
 
 private:
@@ -170,6 +176,12 @@ private:
     int m_id;
     std::mutex m_rows_mutex;
 };
+
+std::ostream &operator<<(std::ostream &os, const Color &grid);
+std::ostream &operator<<(std::ostream &os, const Rect &grid);
+std::ostream &operator<<(std::ostream &os, const Letter &grid);
+std::ostream &operator<<(std::ostream &os, const TextGrid &grid);
+
 
 void init(const std::vector<std::string> &args = {});
 

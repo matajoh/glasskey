@@ -1,7 +1,7 @@
 #include <thread>
 #include <chrono>
 
-#include "glasskey.h"
+#include "glasskey/glasskey.h"
 
 class Ball {
 public:
@@ -11,7 +11,6 @@ public:
         m_dx(dx),
         m_dy(dy),
         m_bounds(bounds),
-        m_new_bounds(bounds),
         m_value(value)
     {
     }
@@ -24,8 +23,6 @@ public:
         gk::Index top = gk::Index(m_y);
         gk::Index right = left + m_bounds.width;
         gk::Index bottom = top + m_bounds.height;
-        gk::Index dx = 0;
-        gk::Index dy = 0;
         if(left < 0){
             m_x = 0;
             m_dx *= -1;
@@ -57,13 +54,12 @@ private:
     float m_dx;
     float m_dy;
     gk::Rect m_bounds;
-    gk::Rect m_new_bounds;
     char m_value;
 };
 
 int main(int argc, char *argv[])
 {
-    auto text_grid = gk::create_grid(45, 75, "Test");
+    auto text_grid = gk::create_grid(45, 75, "Bouncing Ball");
 
     Ball red({1, 1, 3, 3}, 0.2f, 0.4f, '+');
     Ball green({10, 12, 5, 5}, -0.2f, 0.1f, '=');
