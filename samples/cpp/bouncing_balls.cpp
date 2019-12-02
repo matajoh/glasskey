@@ -58,7 +58,7 @@ private:
 
 int main(int argc, char *argv[])
 {
-    auto text_grid = gk::create_grid(45, 75, "Bouncing Ball");
+    auto text_grid = gk::create_grid(27, 45, "Bouncing Ball");
 
     Ball red({1, 1, 3, 3}, 0.2f, 0.4f, '*');
     Ball green({10, 12, 5, 5}, -0.2f, 0.1f, '=');

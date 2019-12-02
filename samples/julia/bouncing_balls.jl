@@ -48,7 +48,7 @@ function draw!(ball::Ball, text_grid)
 end
 
 function main()
-    text_grid = gk.create_grid(45, 75, "Bouncing Balls")
+    text_grid = gk.create_grid(27, 45, "Bouncing Balls")
 
     red = Ball(1, 1, 0.2, 0.4, gk.Rect(1, 1, 3, 3), "*")
     green = Ball(10, 12, -0.2, 0.1, gk.Rect(10, 12, 5, 5), "=")

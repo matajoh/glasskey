@@ -38,7 +38,7 @@ class Ball:
 
 
 def _main():
-    text_grid = gk.create_grid(45, 75, "Bouncing Balls")
+    text_grid = gk.create_grid(27, 45, "Bouncing Balls")
 
     red = Ball(gk.Rect(1, 1, 3, 3), 0.2, 0.4, '*')
     green = Ball(gk.Rect(10, 12, 5, 5), -0.2, 0.1, '=')

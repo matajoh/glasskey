@@ -150,34 +150,94 @@ We provide three samples to demonstrate the functionality of the library:
 
 ### Hello World
 
+The Hello World sample demonstrates the basic functionality of the library
+(as seen above) and is provided in:
+
+- [C++](samples/cpp/hello_world.cpp)
+- [Python](samples/python/hello_world.py)
+- [Julia](samples/julia/hello_world.jl)
+
+![Hello World](doc/hello_world.gif)
+
 ### Bouncing Balls
+
+The bouncing balls sample shows some simple animations and coloring, showing
+how to use the library in combination with your own classes. It is provided in:
+- [C++](samples/cpp/bouncing_balls.cpp)
+- [Python](samples/python/bouncing_balls.py)
+- [Julia](samples/julia/bouncing_balls.jl)
+
+![Bouncing Balls](doc/hello_world.gif)
 
 ### Multi-Window
 
+The multi-window sample shows how the library is able to handle having multiple
+windows open at the same time and interacting with each other. It is provided in:
+- [C++](samples/cpp/multi_window.cpp)
+- [Python](samples/python/multi_window.py)
+- [Julia](samples/julia/multi_window.jl)
 
-The full list of supported languages (with samples) are:
-
-1. C++
-    - [hello_world.cpp](samples/cpp/hello_world.cpp)
-    - [bouncing_balls.cpp](samples/cpp/bouncing_balls.cpp)
-    - [multi_window.cpp](samples/cpp/multi_window.cpp)
-2. Python
-    - [hello_world.py](samples/python/hello_world.py)
-    - [bouncing_balls.py](samples/python/bouncing_balls.py)
-    - [multi_window.py](samples/python/multi_window.py)
-3. Julia
-    - [hello_world.jl](samples/julia/hello_world.jl)
-    - [bouncing_balls.jl](samples/julia/bouncing_balls.jl)
-    - [multi_window.jl](samples/julia/multi_window.jl)
+![Multi-Window](doc/multi_windows.gif)
 
 ## Build Instructions
 
+It is recommended that you use the pre-built binaries I provide if possible. Otherwise,
 To build the project, you will first need to obtain the following
 dependencies:
-
-Dependencies:
 - [CMake](https://cmake.org/)
 - [FreeGLUT](http://freeglut.sourceforge.net/)
-- 
+- [Pybind11](https://github.com/pybind/pybind11) *Optional: needed to build the Python module*
+
+You will need to ensure that FreeGLUT and Pybind11 are installed and discoverable
+by CMake. Once that is done, you can initialize and build the project in the following fashion:
+
+```
+mkdir build
+cmake ..
+cmake --build . --config Debug
+cmake --build . --config Release
+```
+
+This will build the C++ library. You can then install it using:
+
+```
+cmake --build . --config Debug --target INSTALL
+cmake --build . --config Release --target INSTALL
+```
+
+This will install both debug and release versions of the library.
+
+### Python
+
+If you wish to install the Python yourself or build your own wheels, you can
+use the standard Python setuptools approach:
+
+```
+python setup.py develop
+```
+
+will build the module and install it on your local machine.
+
+```
+python setup.py bdist_wheel
+```
+
+will build a binary wheel that you can use for installation.
+
 
 ## Frequently Asked Questions
+
+### Why does my animation go so fast?
+
+Did you remember to call `gk::next_frame()`? This is the most common cause
+of animations going too quickly.
+
+### Why doesn't my animation ever update?
+
+Remember to call `gk::blit()` or the library will not know to redraw
+the TextGrid.
+
+## Support
+
+If you have questions, suggestions, or feature requests please raise
+an issue. Hope you find this library useful!!

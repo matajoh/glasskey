@@ -23,7 +23,7 @@ def _main():
     bounds = gk.Rect(COLS-BALL_SIZE, ROWS, BALL_SIZE, BALL_SIZE)
     row = 0
     text = "Hello world!"
-    for i in range(1, 100):
+    for _ in range(1, 100):
         # clear the grid
         text_grid.clear(row, 0, len(text))
         text_grid.clear(bounds)
