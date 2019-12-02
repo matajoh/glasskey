@@ -15,7 +15,7 @@ def _main():
     left.draw(9, COLS-5, "multiitlum")
     right.draw(9, -5, "multiitlum")
     delta_x = 1
-    for _ in range(1000):
+    for _ in range(300):
         left.clear(bounds)
         right.clear(bounds.translate(-COLS, 0))
 

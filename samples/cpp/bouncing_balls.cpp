@@ -60,16 +60,16 @@ int main(int argc, char *argv[])
 {
     auto text_grid = gk::create_grid(45, 75, "Bouncing Ball");
 
-    Ball red({1, 1, 3, 3}, 0.2f, 0.4f, '+');
+    Ball red({1, 1, 3, 3}, 0.2f, 0.4f, '*');
     Ball green({10, 12, 5, 5}, -0.2f, 0.1f, '=');
     Ball blue({100, 40, 2, 2}, 0.8f, -0.4f, 'o');
 
-    text_grid->map_color('+', gk::Colors::Red);
+    text_grid->map_color('*', gk::Colors::Red);
     text_grid->map_color('=', gk::Colors::Green);
     text_grid->map_color('o', gk::Colors::Blue);
 
     gk::start();
-    for(int i=0; i<1000; ++i){
+    for(int i=0; i<300; ++i){
         red.update(text_grid);
         green.update(text_grid);
         blue.update(text_grid);

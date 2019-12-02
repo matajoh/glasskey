@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     left->draw(9, COLS-5, "multiitlum");
     right->draw(9, -5, "multiitlum");
     gk::Index delta_x = 1;
-    for(int i=1; i<1000; ++i){
+    for(int i=1; i<300; ++i){
         left->clear(bounds);
         right->clear(bounds.translate(-COLS, 0));
 

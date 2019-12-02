@@ -20,8 +20,6 @@ std::queue<std::shared_ptr<gk::TextGrid>> g_to_create;
 std::queue<std::shared_ptr<gk::TextGrid>> g_to_destroy;
 std::chrono::time_point<std::chrono::system_clock> g_last_refresh_time;
 int g_start_x = 10;
-const int COLW = 9;
-const int ROWH = 15;
 } // namespace
 
 namespace gk
@@ -95,8 +93,8 @@ void reset_perspective_projection()
 void resize(int width, int height)
 {
     auto text_grid = g_grid_map[glutGetWindow()];
-    width = text_grid->cols() * COLW;
-    height = text_grid->rows() * ROWH;
+    width = text_grid->cols() * COL_WIDTH;
+    height = text_grid->rows() * ROW_HEIGHT;
     const float ar = (float)width / (float)height;
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
@@ -110,7 +108,7 @@ void display_grid()
 {
     auto text_grid = g_grid_map[glutGetWindow()];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    set_orthographic_projection(text_grid->cols() * COLW, text_grid->rows() * ROWH);
+    set_orthographic_projection(text_grid->cols() * COL_WIDTH, text_grid->rows() * ROW_HEIGHT);
     glPushMatrix();
     glLoadIdentity();
     text_grid->draw_rows();
@@ -132,9 +130,9 @@ void create_and_destroy_grids()
     while (g_to_create.size())
     {
         auto text_grid = g_to_create.front();
-        glutInitWindowSize(text_grid->cols() * COLW, text_grid->rows() * ROWH);
+        glutInitWindowSize(text_grid->cols() * COL_WIDTH, text_grid->rows() * ROW_HEIGHT);
         glutInitWindowPosition(g_start_x, 10);
-        g_start_x += text_grid->cols() * COLW;
+        g_start_x += text_grid->cols() * COL_WIDTH;
         glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
         glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
         text_grid->id() = glutCreateWindow(text_grid->title().c_str());

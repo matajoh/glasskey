@@ -4,8 +4,8 @@
 
 int main(int argc, char *argv[])
 {
-    const gk::Size ROWS = 20;
-    const gk::Size COLS = 20;
+    const gk::Size ROWS = 2*gk::COL_WIDTH;
+    const gk::Size COLS = 2*gk::ROW_HEIGHT;
     const gk::Size BALL_SIZE = 3;
 
     // create a TextGrid

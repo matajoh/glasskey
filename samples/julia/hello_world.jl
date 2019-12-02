@@ -2,15 +2,16 @@
 
 using PyCall
 
-const ROWS = 20
-const COLS = 20
+gk = pyimport("glasskey")
+
+const ROWS = 2*gk.ColumnWidth
+const COLS = 2*gk.RowHeight
 const BALL_SIZE = 3
 
 function main()
-    gk = pyimport("glasskey")
 
     # create a TextGrid
-    text_grid = gk.create_grid(20, 20, "Hello World")
+    text_grid = gk.create_grid(ROWS, COLS, "Hello World")
 
     # map certain ASCII characters to a color
     text_grid.map_color("o", gk.Colors.Red)

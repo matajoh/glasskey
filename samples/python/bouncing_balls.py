@@ -40,17 +40,17 @@ class Ball:
 def _main():
     text_grid = gk.create_grid(45, 75, "Bouncing Balls")
 
-    red = Ball(gk.Rect(1, 1, 3, 3), 0.2, 0.4, '+')
+    red = Ball(gk.Rect(1, 1, 3, 3), 0.2, 0.4, '*')
     green = Ball(gk.Rect(10, 12, 5, 5), -0.2, 0.1, '=')
     blue = Ball(gk.Rect(100, 40, 2, 2), 0.8, -0.4, 'o')
 
-    text_grid.map_color('+', gk.Colors.Red)
+    text_grid.map_color('*', gk.Colors.Red)
     text_grid.map_color('=', gk.Colors.Green)
     text_grid.map_color('o', gk.Colors.Blue)
 
     gk.start()
 
-    for _ in range(1000):
+    for _ in range(300):
         red.update(text_grid)
         green.update(text_grid)
         blue.update(text_grid)

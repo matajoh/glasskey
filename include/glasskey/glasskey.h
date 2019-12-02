@@ -23,6 +23,9 @@
 namespace gk
 {
 
+const int COL_WIDTH = 9;
+const int ROW_HEIGHT = 15;
+
 /** Class representing an RGB color, where RGB are floating-point values from [0, 1] */
 class Color
 {

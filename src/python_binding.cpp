@@ -33,6 +33,8 @@ PYBIND11_MODULE(_pyglasskey, m)
     )gkdoc",
           "red"_a, "green"_a, "blue"_a);
 
+    m.attr("RowHeight") = py::int_(ROW_HEIGHT);
+    m.attr("ColumnWidth") = py::int_(COL_WIDTH);
     m.attr("Black") = Colors::Black;
     m.attr("White") = Colors::White;
     m.attr("Red") = Colors::Red;

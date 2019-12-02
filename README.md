@@ -16,8 +16,8 @@ packages and wheels. Here is a [sample program](samples/cpp/hello_world.cpp) in 
 
 int main(int argc, char *argv[])
 {
-    const gk::Size ROWS = 20;
-    const gk::Size COLS = 20;
+    const gk::Size ROWS = 2*gk::COL_WIDTH;
+    const gk::Size COLS = 2*gk::ROW_HEIGHT;
     const gk::Size BALL_SIZE = 3;
 
     // create a TextGrid
@@ -81,13 +81,13 @@ For reference, here is the same program in Python:
 ```python
 import glasskey as gk
 
-ROWS = 20
-COLS = 20
+ROWS = 2*gk.ColumnWidth
+COLS = 2*gk.RowHeight
 BALL_SIZE = 3
 
 def _main():
     # create a TextGrid
-    text_grid = gk.create_grid(20, 20, "Hello World")
+    text_grid = gk.create_grid(ROWS, COLS, "Hello World")
 
     # map certain ASCII characters to a color
     text_grid.map_color('o', gk.Colors.Red)
