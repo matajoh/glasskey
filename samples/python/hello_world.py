@@ -1,8 +1,11 @@
+""" Hello World sample """
+
 import glasskey as gk
 
 ROWS = 20
 COLS = 20
 BALL_SIZE = 3
+
 
 def _main():
     # create a TextGrid
@@ -29,7 +32,7 @@ def _main():
         bounds = bounds.translate(0, -1)
         if bounds.bottom == 0:
             bounds = bounds.translate(0, ROWS+BALL_SIZE)
-        
+
         row = (row + 1) % ROWS
 
         # we can draw text directly to the grid
@@ -37,7 +40,7 @@ def _main():
 
         # we can draw rectangles of the same character
         text_grid.draw(bounds, 'x')
-    
+
         # both of the above methods use the grid's default
         # color mapping. We can control the coloring directly
         # as shown below
@@ -49,7 +52,10 @@ def _main():
         ]
         text_grid.draw(ROWS//2, COLS//2, letters)
 
-        # finally we signal that we are done drawing.
+        # we let GL know that the TextGrid is ready to be redrawn
+        text_grid.blit()
+
+        # Now we wait until it is time for the next frame.
         # You can optionally pass a target framerate
         # (default is 30hz)
         gk.next_frame(10)

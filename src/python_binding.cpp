@@ -220,6 +220,7 @@ PYBIND11_MODULE(_pyglasskey, m)
                 a reference to the row
         )gkdoc",
              "row"_a)
+        .def("blit", &TextGrid::blit, "Requests that the TextGrid be redrawn to the screen")
         .def("__repr__", &TextGrid::to_string)
         .def_property_readonly("rows", &TextGrid::rows, "The number of rows in the grid")
         .def_property_readonly("cols", &TextGrid::cols, "The number of columns in the grid")

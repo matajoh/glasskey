@@ -1,3 +1,5 @@
+""" Hello world sample """
+
 using PyCall
 
 const ROWS = 20
@@ -52,7 +54,10 @@ function main()
         ]
         text_grid.draw(div(ROWS, 2), div(COLS, 2), letters)
 
-        # finally we signal that we are done drawing.
+        # we let GL know that the TextGrid is ready to be redrawn
+        text_grid.blit();
+
+        # Now we wait until it is time for the next frame.
         # You can optionally pass a target framerate
         # (default is 30hz)
         gk.next_frame(10)

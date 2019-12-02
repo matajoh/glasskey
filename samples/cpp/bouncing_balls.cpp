@@ -78,6 +78,8 @@ int main(int argc, char *argv[])
         green.draw(text_grid);
         blue.draw(text_grid);
 
+        text_grid->blit();
+
         gk::next_frame();
     }
 

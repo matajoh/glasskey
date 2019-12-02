@@ -106,7 +106,6 @@ TextGrid &TextGrid::draw(Index row, Index col, const std::string &values)
     std::transform(first, last, std::back_inserter(letters),
                    [this](char value) -> Letter { return Letter(value, get_color(value)); });
     std::copy(letters.begin(), letters.end(), m_grid[row].begin() + left);
-    m_is_dirty = true;
     return *this;
 }
 
@@ -123,7 +122,6 @@ TextGrid &TextGrid::draw(Index row, Index col, const std::vector<Letter> &letter
     auto first = letters.begin() + (left - col);
     auto last = first + (right - left);
     std::copy(first, last, m_grid[row].begin() + left);
-    m_is_dirty = true;
     return *this;
 }
 
@@ -146,8 +144,6 @@ TextGrid &TextGrid::draw(const Rect &rect, char value)
         std::fill(left, right, letter);
     }
 
-    m_is_dirty = true;
-
     return *this;
 }
 
@@ -165,8 +161,6 @@ TextGrid &TextGrid::clear(Index row, Index col, Size cols)
     auto first = m_grid[row].begin() + (left - col);
     auto last = first + (right - left);
     std::fill(first, last, Letter());
-
-    m_is_dirty = true;
 
     return *this;
 }
@@ -225,6 +219,12 @@ void TextGrid::draw_rows()
     }
 
     m_is_dirty = false;
+}
+
+void TextGrid::blit()
+{
+    std::lock_guard<std::mutex> guard(m_rows_mutex);
+    m_is_dirty = true;
 }
 
 bool TextGrid::is_dirty()

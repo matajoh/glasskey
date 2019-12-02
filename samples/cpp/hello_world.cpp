@@ -1,3 +1,5 @@
+/** Hello World sample */
+
 #include "glasskey/glasskey.h"
 
 int main(int argc, char *argv[])
@@ -51,7 +53,10 @@ int main(int argc, char *argv[])
         };
         text_grid->draw(ROWS/2, COLS/2, letters);
 
-        // finally we signal that we are done drawing.
+        // we let GL know that the TextGrid is ready to be redrawn
+        text_grid->blit();
+
+        // Now we wait until it is time for the next frame.
         // You can optionally pass a target framerate
         // (default is 30hz)
         gk::next_frame(10);

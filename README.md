@@ -144,7 +144,19 @@ if __name__ == "__main__":
 
 ```
 
+## Samples
+
+We provide three samples to demonstrate the functionality of the library:
+
+### Hello World
+
+### Bouncing Balls
+
+### Multi-Window
+
+
 The full list of supported languages (with samples) are:
+
 1. C++
     - [hello_world.cpp](samples/cpp/hello_world.cpp)
     - [bouncing_balls.cpp](samples/cpp/bouncing_balls.cpp)
@@ -159,5 +171,13 @@ The full list of supported languages (with samples) are:
     - [multi_window.jl](samples/julia/multi_window.jl)
 
 ## Build Instructions
+
+To build the project, you will first need to obtain the following
+dependencies:
+
+Dependencies:
+- [CMake](https://cmake.org/)
+- [FreeGLUT](http://freeglut.sourceforge.net/)
+- 
 
 ## Frequently Asked Questions

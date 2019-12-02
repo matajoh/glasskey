@@ -344,6 +344,9 @@ public:
     /** Represents of the state of the object as a string */
     std::string to_string() const;
 
+    /** Requests that the TextGrid be redrawn to the screen */
+    void blit();
+
     friend std::shared_ptr<TextGrid> create_grid(Size rows, Size cols, const std::string &title = "Title", const Color &default_color = Colors::White);
     friend void display_grid();
     friend void refresh_grids();

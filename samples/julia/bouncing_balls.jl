@@ -69,6 +69,8 @@ function main()
         draw!(green, text_grid)
         draw!(blue, text_grid)
 
+        text_grid.blit();
+
         gk.next_frame()
     end
 
