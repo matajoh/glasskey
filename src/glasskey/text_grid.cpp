@@ -18,13 +18,24 @@ namespace gk
 {
 Letter::Letter() : Letter(' ', Colors::White) {}
 
-Letter::Letter(char value, const Color &color) : value(value), color(color) {}
+Letter::Letter(char value, const Color &color) : m_value(value), m_color(color) {}
+
+char Letter::value() const
+{
+    return m_value;
+}
+
+const Color &Letter::color() const
+{
+    return m_color;
+}
+
 
 std::string Letter::to_string() const
 {
     std::stringstream stream;
-    stream << "Letter(value=" << value
-           << ", color=" << color
+    stream << "Letter(value=" << m_value
+           << ", color=" << m_color
            << ")";
 
     return stream.str();
@@ -69,12 +80,12 @@ std::string TextGrid::to_string() const
     return stream.str();
 }
 
-const Letter &TextGrid::get(Index row, Index col) const
+const Letter &TextGrid::get_letter(Index row, Index col) const
 {
     return m_grid[row][col];
 }
 
-const Row &TextGrid::get(Index row) const
+const Row &TextGrid::get_row(Index row) const
 {
     return m_grid[row];
 }
@@ -87,8 +98,8 @@ TextGrid &TextGrid::draw(Index row, Index col, const std::string &values)
         row += m_rows;
     }
 
-    Index left = fix_range(col, m_cols);
-    Index right = fix_range(col + Size(values.size()), m_cols);
+    Index left = fix_range(col, 0, m_cols);
+    Index right = fix_range(col + Size(values.size()), 0, m_cols);
     auto first = values.begin() + (left - col);
     auto last = first + (right - left);
     std::vector<Letter> letters;
@@ -107,8 +118,8 @@ TextGrid &TextGrid::draw(Index row, Index col, const std::vector<Letter> &letter
         row += m_rows;
     }
 
-    Index left = fix_range(col, m_cols);
-    Index right = fix_range(col + Size(letters.size()), m_cols);
+    Index left = fix_range(col, 0, m_cols);
+    Index right = fix_range(col + Size(letters.size()), 0, m_cols);
     auto first = letters.begin() + (left - col);
     auto last = first + (right - left);
     std::copy(first, last, m_grid[row].begin() + left);
@@ -126,12 +137,12 @@ TextGrid &TextGrid::draw(const Rect &rect, char value)
         return *this;
     }
 
-    auto top = m_grid.begin() + clip.top;
-    auto bottom = m_grid.begin() + clip.bottom;
+    auto top = m_grid.begin() + clip.top();
+    auto bottom = m_grid.begin() + clip.bottom();
     for (auto row = top; row < bottom; ++row)
     {
-        auto left = row->begin() + clip.left;
-        auto right = row->begin() + clip.right;
+        auto left = row->begin() + clip.left();
+        auto right = row->begin() + clip.right();
         std::fill(left, right, letter);
     }
 
@@ -143,15 +154,16 @@ TextGrid &TextGrid::draw(const Rect &rect, char value)
 TextGrid &TextGrid::clear(Index row, Index col, Size cols)
 {
     std::lock_guard<std::mutex> guard(m_rows_mutex);
-    Index left = fix_range(col, m_cols);
-    Index right = fix_range(col + cols, m_cols);
+    // TODO create function for this
+    Index left = fix_range(col, 0, m_cols);
+    Index right = fix_range(col + cols, 0, m_cols);
     if (right - left == 0)
     {
         return *this;
     }
 
-    auto first = m_grid[row].begin() + left;
-    auto last = m_grid[row].begin() + right;
+    auto first = m_grid[row].begin() + (left - col);
+    auto last = first + (right - left);
     std::fill(first, last, Letter());
 
     m_is_dirty = true;
@@ -195,15 +207,17 @@ void TextGrid::draw_rows()
         float x = 0;
         for (auto &letter : row)
         {
-            if (letter.value == ' ')
+            if (letter.value() == ' ')
             {
                 x += COLW;
                 continue;
             }
 
-            glColor3f(letter.color.r, letter.color.g, letter.color.b);
+            glColor3f(letter.color().red(),
+                      letter.color().green(),
+                      letter.color().blue());
             glRasterPos2f(x, y);
-            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, letter.value);
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, letter.value());
             x += COLW;
         }
 

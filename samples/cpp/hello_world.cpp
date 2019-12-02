@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
         // animate        
         bounds = bounds.translate(0, -1);
-        if(bounds.bottom == 0){
+        if(bounds.bottom() == 0){
             bounds = bounds.translate(0, ROWS+BALL_SIZE);
         }
         row = (row + 1) % ROWS;

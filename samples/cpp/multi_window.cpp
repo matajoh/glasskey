@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
         right->clear(bounds.translate(-COLS, 0));
 
         bounds = bounds.translate(dx, 0);
-        if(bounds.right == 2*COLS || bounds.left == 0){
+        if(bounds.right() == 2*COLS || bounds.left() == 0){
             dx *= -1;
         }
 

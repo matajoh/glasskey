@@ -106,7 +106,7 @@ void resize(int width, int height)
     glLoadIdentity();
 }
 
-void display()
+void display_grid()
 {
     auto text_grid = g_grid_map[glutGetWindow()];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -139,7 +139,7 @@ void create_and_destroy_grids()
         glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
         text_grid->id() = glutCreateWindow(text_grid->title().c_str());
         glutReshapeFunc(&resize);
-        glutDisplayFunc(&display);
+        glutDisplayFunc(&display_grid);
         glutCloseFunc(&close);
         g_grid_map[text_grid->id()] = text_grid;
         g_to_create.pop();
@@ -154,7 +154,7 @@ void create_and_destroy_grids()
     }
 }
 
-void refresh()
+void refresh_grids()
 {
     for (auto &pair : g_grid_map)
     {
@@ -173,7 +173,7 @@ void main_loop()
     while (g_is_running.load())
     {
         create_and_destroy_grids();
-        refresh();
+        refresh_grids();
         glutMainLoopEvent();
     }
 }

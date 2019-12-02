@@ -107,18 +107,19 @@ typedef std::int16_t Index;
 /** Type of unsigned grid sizes */
 typedef std::uint16_t Size;
 
-/** Fix the range of a value to fall within the range [0, max].
+/** Fix the range of a value to fall within the range [min, max].
  * 
  * \param value the value to restrict. Will be unchanged if it already
  *              falls within the range
+ * \param min the minimum allowed value
  * \param max the maximum allowed value
  * \return the fixed value
 */
-inline Index fix_range(Index value, Size max)
+inline Index fix_range(Index value, Size min, Size max)
 {
-    if (value < 0)
+    if (value < min)
     {
-        return 0;
+        return min;
     }
 
     if (value > max)
@@ -128,6 +129,7 @@ inline Index fix_range(Index value, Size max)
 
     return value;
 }
+
 
 /** Class representing a rectangular area within the grid */
 class Rect
@@ -173,7 +175,7 @@ public:
      *  \param region the clipping region
      *  \return the clipped rectangle
      */
-    Rect clip(const Rect& region) const;
+    Rect clip(const Rect &region) const;
 
     /** The width of the rectangle in columns */
     Size width() const;
@@ -223,7 +225,7 @@ public:
     char value() const;
 
     /** The display color */
-    Color color() const;
+    const Color &color() const;
 
     /** Represents of the state of the object as a string */
     std::string to_string() const;
@@ -332,7 +334,7 @@ public:
 
     /** The title for this grid. Will be shown in the title bar of its window. */
     const std::string &title() const;
-    
+
     /** The OpenGL window ID associated with this text grid. */
     int &id();
 
@@ -343,7 +345,8 @@ public:
     std::string to_string() const;
 
     friend std::shared_ptr<TextGrid> create_grid(Size rows, Size cols, const std::string &title = "Title", const Color &default_color = Colors::White);
-    friend void refresh();
+    friend void display_grid();
+    friend void refresh_grids();
 
 protected:
     /** Constructor. Protected due to the need for the factory to manage creation
@@ -351,10 +354,10 @@ protected:
      */
     TextGrid(Size rows, Size cols, const std::string &title, const Color &default_color);
 
-    /** Draws the rows of this TextGrid to the current in-context GL window */
+    /** Draws the rows of this TextGrid to the current in-context GL window. */
     void draw_rows();
 
-    /** Whether the text grid needs to be redrawn. */
+    /** Whether the text grid needs to be redrawn */
     bool is_dirty();
 
 private:

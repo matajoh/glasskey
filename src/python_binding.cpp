@@ -129,8 +129,8 @@ PYBIND11_MODULE(_pyglasskey, m)
     )gkdoc")
         .def(py::init<char, const Color &>(), "value"_a = ' ', "color"_a = Colors::White)
         .def("__repr__", &Letter::to_string)
-        .def_readwrite("value", &Letter::value, "The ASCII character value")
-        .def_readwrite("color", &Letter::color, "The display color");
+        .def_property_readonly("value", &Letter::value, "The ASCII character value")
+        .def_property_readonly("color", &Letter::color, "The display color");
 
     py::class_<TextGrid, std::shared_ptr<TextGrid>>(m, "TextGrid", R"gkdoc(
         Class representing a grid of animated ASCII text
