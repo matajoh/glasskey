@@ -24,9 +24,9 @@ std::string Letter::to_string() const
 {
     std::stringstream stream;
     stream << "Letter(value=" << value
-        << ", color=" << color
-        << ")";
-    
+           << ", color=" << color
+           << ")";
+
     return stream.str();
 }
 
@@ -60,12 +60,12 @@ std::string TextGrid::to_string() const
 {
     std::stringstream stream;
     stream << "TextGrid(rows=" << m_rows
-        << ", cols=" << m_cols
-        << ", title=" << m_title
-        << ", default_color=" << m_default_color
-        << ", gl_id=" << m_id
-        << ")";
-    
+           << ", cols=" << m_cols
+           << ", title=" << m_title
+           << ", default_color=" << m_default_color
+           << ", gl_id=" << m_id
+           << ")";
+
     return stream.str();
 }
 

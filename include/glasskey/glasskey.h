@@ -156,7 +156,7 @@ public:
     bool is_dirty() const;
     void draw_rows();
     std::string to_string() const;
-    
+
     friend std::shared_ptr<TextGrid> create_grid(Size rows, Size cols, const std::string &title = "Title", const Color &default_color = Colors::White);
 
 private:
@@ -179,7 +179,6 @@ std::ostream &operator<<(std::ostream &os, const Rect &grid);
 std::ostream &operator<<(std::ostream &os, const Letter &grid);
 std::ostream &operator<<(std::ostream &os, const TextGrid &grid);
 
-
 void init(const std::vector<std::string> &args = {});
 
 void start();
@@ -187,6 +186,8 @@ void start();
 void stop();
 
 void destroy_grid(std::shared_ptr<TextGrid> text_grid);
+
+void next_frame(float frames_per_second = 30.0f);
 
 } // namespace gk
 

@@ -6,14 +6,14 @@
 namespace gk
 {
 
-Rect::Rect(Index left, Index top, Size width, Size height) :
-    left(left),
-    top(top),
-    width(width),
-    height(height),
-    right(left + width),
-    bottom(top + height)
-    {}
+Rect::Rect(Index left, Index top, Size width, Size height) : left(left),
+                                                             top(top),
+                                                             width(width),
+                                                             height(height),
+                                                             right(left + width),
+                                                             bottom(top + height)
+{
+}
 
 Rect Rect::translate(Index dx, Index dy) const
 {
@@ -31,17 +31,17 @@ Rect Rect::clip(Size width, Size height) const
     Index top = fix_range(this->top, height);
     Index right = fix_range(this->right, width);
     Index bottom = fix_range(this->bottom, height);
-    return Rect(left, top, right-left, bottom-top);
+    return Rect(left, top, right - left, bottom - top);
 }
 
 std::string Rect::to_string() const
 {
     std::stringstream stream;
     stream << "Rect(left=" << left
-        << ", top=" << top
-        << ", width=" << width
-        << ", height=" << height
-        << ")";
+           << ", top=" << top
+           << ", width=" << width
+           << ", height=" << height
+           << ")";
 
     return stream.str();
 }
@@ -50,4 +50,4 @@ std::uint32_t Rect::area() const
 {
     return static_cast<std::uint32_t>(width) * static_cast<std::uint32_t>(height);
 }
-}
+} // namespace gk

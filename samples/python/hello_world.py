@@ -2,26 +2,61 @@ import time
 
 import glasskey as gk
 
+ROWS = 20
+COLS = 20
+BALL_SIZE = 3
+
 def _main():
+    # create a TextGrid
     text_grid = gk.create_grid(20, 20, "Hello World")
 
-    gk.start()
+    # map certain ASCII characters to a color
     text_grid.map_color('o', gk.Colors.Red)
     text_grid.map_color('l', gk.Colors.Blue)
     text_grid.map_color('!', gk.Colors.Green)
 
-    frame_time = 100/1000
+    # start the GL main loop
+    gk.start()
+
+    # the animation loop
+    bounds = gk.Rect(COLS-BALL_SIZE, ROWS, BALL_SIZE, BALL_SIZE)
+    row = 0
     text = "Hello world!"
     for i in range(1, 100):
-        row = i % 20
-        last = (i-1) % 20
-        start = time.time()
-        text_grid.clear(last, 0, len(text))
+        # clear the grid
+        text_grid.clear(row, 0, len(text))
+        text_grid.clear(bounds)
+
+        # animate
+        bounds = bounds.translate(0, -1)
+        if bounds.bottom == 0:
+            bounds = bounds.translate(0, ROWS+BALL_SIZE)
+        
+        row = (row + 1) % ROWS
+
+        # we can draw text directly to the grid
         text_grid.draw(row, 0, text)
-        duration = time.time() - start
-        if duration < frame_time:
-            time.sleep(frame_time - duration)
+        # we can draw rectangles of the same character
+        text_grid.draw(bounds, 'x')
     
+        # both of the above methods use the grid's default
+        # color mapping. We can also control this directly
+        # as shown below
+        letters = [
+            gk.Letter('l', gk.Colors.Cyan),
+            gk.Letter('o', gk.Colors.Magenta),
+            gk.Letter('l', gk.Colors.Yellow),
+            gk.Letter('!', gk.Colors.White)
+        ]
+        text_grid.draw(ROWS//2, COLS//2, letters)
+
+        # finally we signal that we are done drawing.
+        # You can optionally pass a target framerate
+        # (default is 30hz)
+        print("frame", i)
+        gk.next_frame(1)
+
+    # stop the GL main loop
     gk.stop()
 
 
