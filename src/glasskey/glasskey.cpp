@@ -13,7 +13,6 @@ namespace
 {
 bool g_init = false;
 std::atomic_bool g_is_running = false;
-std::atomic_bool g_do_refresh = false;
 std::thread g_main_thread;
 std::mutex g_grid_mutex;
 std::map<int, std::shared_ptr<gk::TextGrid>> g_grid_map;
@@ -174,11 +173,7 @@ void main_loop()
     while (g_is_running.load())
     {
         create_and_destroy_grids();
-        if(g_do_refresh.load()){
-            refresh();
-            g_do_refresh.store(false);
-        }
-
+        refresh();
         glutMainLoopEvent();
     }
 }
@@ -210,7 +205,6 @@ void next_frame(float frames_per_second)
     }
 
     g_last_refresh_time = std::chrono::system_clock::now();
-    g_do_refresh.store(true);
 }
 
 } // namespace gk

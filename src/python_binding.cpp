@@ -12,8 +12,7 @@ namespace py = pybind11;
 PYBIND11_MODULE(_pyglasskey, m)
 {
     py::class_<Color>(m, "Color")
-        .def(py::init<>())
-        .def(py::init<float, float, float>(), "red"_a, "green"_a, "blue"_a)
+        .def(py::init<float, float, float>(), "red"_a=0, "green"_a=0, "blue"_a=0)
         .def_readwrite("r", &Color::r)
         .def_readwrite("g", &Color::g)
         .def_readwrite("b", &Color::b)
@@ -71,8 +70,7 @@ PYBIND11_MODULE(_pyglasskey, m)
         .def("__repr__", &Rect::to_string);
     
     py::class_<Letter>(m, "Letter")
-        .def(py::init<>())
-        .def(py::init<char, const Color&>(), "value"_a, "color"_a)
+        .def(py::init<char, const Color&>(), "value"_a=' ', "color"_a=Colors::White)
         .def("__repr__", &Letter::to_string)
         .def_readwrite("value", &Letter::value)
         .def_readwrite("color", &Letter::color);
@@ -105,4 +103,5 @@ PYBIND11_MODULE(_pyglasskey, m)
     m.def("stop", &stop, "Stop the event loop");
     m.def("create_grid", &create_grid, "rows"_a, "cols"_a, "title"_a="Title", "default_color"_a=Colors::White);
     m.def("destroy_grid", &destroy_grid, "text_grid"_a);
+    m.def("next_frame", &next_frame, "frames_per_second"_a=30.0);
 }

@@ -1,5 +1,3 @@
-import time
-
 import glasskey as gk
 
 ROWS = 20
@@ -36,11 +34,12 @@ def _main():
 
         # we can draw text directly to the grid
         text_grid.draw(row, 0, text)
+
         # we can draw rectangles of the same character
         text_grid.draw(bounds, 'x')
     
         # both of the above methods use the grid's default
-        # color mapping. We can also control this directly
+        # color mapping. We can control the coloring directly
         # as shown below
         letters = [
             gk.Letter('l', gk.Colors.Cyan),
@@ -53,8 +52,7 @@ def _main():
         # finally we signal that we are done drawing.
         # You can optionally pass a target framerate
         # (default is 30hz)
-        print("frame", i)
-        gk.next_frame(1)
+        gk.next_frame(10)
 
     # stop the GL main loop
     gk.stop()

@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
         text_grid->draw(bounds, 'x');
 
         // both of the above methods use the grid's default
-        // color mapping. We can also control this directly
+        // color mapping. We can control the coloring directly
         // as shown below.
         std::vector<gk::Letter> letters = {
             {'l', gk::Colors::Cyan},

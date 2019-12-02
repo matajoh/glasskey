@@ -1,5 +1,4 @@
-#include <thread>
-#include <chrono>
+/** Example showing animated balls bouncing off the edges of the grid */
 
 #include "glasskey/glasskey.h"
 
@@ -70,9 +69,7 @@ int main(int argc, char *argv[])
     text_grid->map_color('o', gk::Colors::Blue);
 
     gk::start();
-    auto frame_time = std::chrono::milliseconds(30);
     for(int i=0; i<1000; ++i){
-        auto start = std::chrono::system_clock::now();
         red.update(text_grid);
         green.update(text_grid);
         blue.update(text_grid);
@@ -81,10 +78,7 @@ int main(int argc, char *argv[])
         green.draw(text_grid);
         blue.draw(text_grid);
 
-        auto dur = std::chrono::system_clock::now() - start;
-        if(dur < frame_time){
-            std::this_thread::sleep_for(frame_time - dur);
-        }
+        gk::next_frame();
     }
 
     gk::stop();

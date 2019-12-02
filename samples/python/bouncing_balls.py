@@ -1,4 +1,4 @@
-import time
+""" Example showing animated balls bouncing off the edges of the grid """
 
 import glasskey as gk
 
@@ -50,9 +50,7 @@ def _main():
 
     gk.start()
 
-    frame_time = 30 / 1000
     for _ in range(1000):
-        start = time.time()
         red.update(text_grid)
         green.update(text_grid)
         blue.update(text_grid)
@@ -61,9 +59,7 @@ def _main():
         green.draw(text_grid)
         blue.draw(text_grid)
 
-        dur = time.time() - start
-        if dur < frame_time:
-            time.sleep(frame_time - dur)
+        gk.next_frame()
 
     gk.stop()
 

@@ -1,4 +1,4 @@
-import time
+""" Example demonstrating the use of multiple windows at once """
 
 import glasskey as gk
 
@@ -10,15 +10,11 @@ def _main():
     right = gk.create_grid(ROWS, COLS, "Right")
     gk.start()
 
-    frame_time = 30/1000
-
     bounds = gk.Rect(0, 3, 3, 3)
     left.draw(9, COLS-5, "multiitlum")
     right.draw(9, -5, "multiitlum")
     dx = 1
     for _ in range(1000):
-        start = time.time()
-
         left.clear(bounds)
         right.clear(bounds.translate(-COLS, 0))
 
@@ -30,9 +26,7 @@ def _main():
         left.draw(bounds, '+')
         right.draw(bounds.translate(-COLS, 0), '+')
 
-        duration = time.time() - start
-        if duration < frame_time:
-            time.sleep(frame_time - duration)
+        gk.next_frame()
     
     gk.stop()
 

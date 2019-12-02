@@ -1,5 +1,6 @@
+""" Example showing animated balls bouncing off the edges of the grid """
+
 using PyCall
-using Dates
 
 gk = pyimport("glasskey")
 
@@ -59,9 +60,7 @@ function main()
 
     gk.start()
 
-    frame_time = Millisecond(30)
     for _ in 1:1000
-        start = now()
         update!(red, text_grid)
         update!(green, text_grid)
         update!(blue, text_grid)
@@ -70,10 +69,7 @@ function main()
         draw!(green, text_grid)
         draw!(blue, text_grid)
 
-        duration = now() - start
-        if duration < frame_time
-            sleep(frame_time - duration)
-        end
+        gk.next_frame()
     end
 
     gk.stop()
