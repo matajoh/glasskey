@@ -64,7 +64,7 @@ public:
     std::float_t green() const;
 
     /** The blue value [0,1] */
-    std::float_t blue();
+    std::float_t blue() const;
 
     /** Represents of the state of the object as a string */
     std::string to_string() const;
@@ -294,7 +294,7 @@ public:
      */
     TextGrid &draw(const Rect &rect, char value);
 
-    /** Clear a region of the specified row (i.e. sets all characters to ' ')
+    /** Clears a region of the specified row (i.e. sets all characters to ' ')
      * 
      *  \param row the row to clear
      *  \param col the starting column. Can be any value, and string
@@ -315,14 +315,14 @@ public:
      *  \param column the desired column
      *  \return the letter at this index
      */
-    const Letter &get(Index row, Index col) const;
+    const Letter &get_letter(Index row, Index col) const;
 
     /** Get the desired Row.
      * 
      *  \param row must be a valid row index in the range [0, rows]
      *  \return a reference to the row
      */
-    const Row &get(Index row) const;
+    const Row &get_row(Index row) const;
 
     /** The number of rows in the grid */
     Size rows() const;
@@ -384,10 +384,10 @@ std::ostream &operator<<(std::ostream &os, const TextGrid &grid);
  */
 void init(const std::vector<std::string> &args = {});
 
-/** Starts the GL main thread */
+/** Starts the GL event loop */
 void start();
 
-/** Stops the GL main thread */
+/** Stops the GL event loop */
 void stop();
 
 /** Destroys a text grid object.
