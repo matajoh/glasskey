@@ -1,8 +1,9 @@
 #include "glasskey/glasskey.h"
 
-#include <thread>
+#include <algorithm>
+#include <atomic>
 #include <iostream>
-#include <map>
+#include <thread>
 #include <queue>
 
 #include <GL/freeglut_std.h>

@@ -3,9 +3,7 @@
 #include <GL/freeglut_std.h>
 #include <GL/freeglut_ext.h>
 
-#include <iostream>
-#include <functional>
-#include <map>
+#include <algorithm>
 #include <sstream>
 
 namespace

@@ -13,18 +13,24 @@
 #define _GK_H_
 
 #include <cstdint>
-#include <vector>
-#include <array>
-#include <string>
+#include <cmath>
 #include <map>
+#include <memory>
 #include <mutex>
-#include <atomic>
+#include <string>
+#include <vector>
 
 namespace gk
 {
 
 const int COL_WIDTH = 9;
 const int ROW_HEIGHT = 15;
+
+/** Type of signed index offsets into a grid */
+typedef std::int16_t Index;
+
+/** Type of unsigned grid sizes */
+typedef std::uint16_t Size;
 
 /** Class representing an RGB color, where RGB are floating-point values from [0, 1] */
 class Color
@@ -104,11 +110,45 @@ const Color Magenta = Color::from_bytes(255, 0, 255);
 const Color Gray = Color::from_bytes(128, 128, 128);
 } // namespace Colors
 
-/** Type of signed index offsets into a grid */
-typedef std::int16_t Index;
+/** Initializes the underlying OpenGL context. Pass any OS-specific parameters via
+ *  this method. Will be called by default the first time start() is called otherwise.
+ * 
+ *  \param args the vector of OpenGL command line arguments
+ * 
+ *  \sa start
+ */
+void init(const std::vector<std::string> &args = {});
 
-/** Type of unsigned grid sizes */
-typedef std::uint16_t Size;
+/** Starts the GL event loop */
+void start();
+
+/** Stops the GL event loop */
+void stop();
+
+class TextGrid;
+
+/** Creates a new TextGrid.
+ * 
+ *  \param rows the number of rows in the grid
+ *  \param cols the number of columns in the grid
+ *  \param title the title. This will be displayed in the title bar of the window.
+ *  \param default_color the color for all letters not otherwise specified.
+ *  \return a pointer to a TextGrid
+ */
+std::shared_ptr<TextGrid> create_grid(Size rows, Size cols, const std::string &title = "Title", const Color &default_color = Colors::White);
+
+/** Destroys a text grid object.
+ * 
+ *  \param text_grid the grid to destroy
+ */
+void destroy_grid(std::shared_ptr<TextGrid> text_grid);
+
+/** Blocking call that waits for the next frame of animation.
+ * 
+ *  \param frames_per_second the target frame rate
+ */
+void next_frame(float frames_per_second = 30.0f);
+
 
 /** Fix the range of a value to fall within the range [min, max].
  * 
@@ -132,7 +172,6 @@ inline Index fix_range(Index value, Size min, Size max)
 
     return value;
 }
-
 
 /** Class representing a rectangular area within the grid */
 class Rect
@@ -350,7 +389,7 @@ public:
     /** Requests that the TextGrid be redrawn to the screen */
     void blit();
 
-    friend std::shared_ptr<TextGrid> create_grid(Size rows, Size cols, const std::string &title = "Title", const Color &default_color = Colors::White);
+    friend std::shared_ptr<TextGrid> create_grid(Size, Size, const std::string &, const Color &);
     friend void display_grid();
     friend void refresh_grids();
 
@@ -383,33 +422,6 @@ std::ostream &operator<<(std::ostream &os, const Color &grid);
 std::ostream &operator<<(std::ostream &os, const Rect &grid);
 std::ostream &operator<<(std::ostream &os, const Letter &grid);
 std::ostream &operator<<(std::ostream &os, const TextGrid &grid);
-
-/** Initializes the underlying OpenGL context. Pass any OS-specific parameters via
- *  this method. Will be called by default the first time start() is called otherwise.
- * 
- *  \param args the vector of OpenGL command line arguments
- * 
- *  \sa start
- */
-void init(const std::vector<std::string> &args = {});
-
-/** Starts the GL event loop */
-void start();
-
-/** Stops the GL event loop */
-void stop();
-
-/** Destroys a text grid object.
- * 
- *  \param text_grid the grid to destroy
- */
-void destroy_grid(std::shared_ptr<TextGrid> text_grid);
-
-/** Blocking call that waits for the next frame of animation.
- * 
- *  \param frames_per_second the target frame rate
- */
-void next_frame(float frames_per_second = 30.0f);
 
 } // namespace gk
 

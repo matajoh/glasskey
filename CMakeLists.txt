@@ -34,15 +34,15 @@ set( WARNINGS_AS_ERRORS OFF )
 
 set (CMAKE_CXX_STANDARD 17)
 
-IF(WIN32)
-    IF(MSVC)
-        SET( CMAKE_DEBUG_POSTFIX "d" )
-    ENDIF(MSVC)
-endif()
+IF(MSVC)
+    SET( CMAKE_DEBUG_POSTFIX "d" )
+ELSE()
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
+ENDIF(MSVC)
 
 ##############################################
 # Declare dependencies
-find_package( freeglut REQUIRED )
+find_package( FreeGLUT REQUIRED )
 
 if( GLASSKEY_BUILD_DOCUMENTATION )
   find_package( Doxygen REQUIRED )
