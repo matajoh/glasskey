@@ -21,6 +21,18 @@ std::queue<std::shared_ptr<gk::TextGrid>> g_to_create;
 std::queue<std::shared_ptr<gk::TextGrid>> g_to_destroy;
 std::chrono::time_point<std::chrono::system_clock> g_last_refresh_time;
 int g_start_x = 10;
+std::mutex g_pressed_mutex;
+std::map<gk::Key, bool> g_is_pressed;
+std::map<unsigned char, gk::Key> g_key_map = {
+    {32, gk::Key::SPACE},
+    {13, gk::Key::ENTER}
+};
+std::map<int, gk::Key> g_special_map = {
+    {GLUT_KEY_UP, gk::Key::UP},
+    {GLUT_KEY_DOWN, gk::Key::DOWN},
+    {GLUT_KEY_RIGHT, gk::Key::RIGHT},
+    {GLUT_KEY_LEFT, gk::Key::LEFT}
+};
 } // namespace
 
 namespace gk
@@ -118,6 +130,44 @@ void display_grid()
     glutSwapBuffers();
 }
 
+void keyboard(unsigned char key, int x, int y)
+{
+    if(g_key_map.count(key)){
+        std::lock_guard<std::mutex> guard(g_pressed_mutex);
+        g_is_pressed[g_key_map[key]] = true;
+    }
+}
+
+void keyboardup(unsigned char key, int x, int y)
+{
+    if(g_key_map.count(key)){
+        std::lock_guard<std::mutex> guard(g_pressed_mutex);
+        g_is_pressed[g_key_map[key]] = false;
+    }
+}
+
+void special(int key, int x, int y)
+{
+    if(g_special_map.count(key)){
+        std::lock_guard<std::mutex> guard(g_pressed_mutex);
+        g_is_pressed[g_special_map[key]] = true;
+    }
+}
+
+void specialup(int key, int x, int y)
+{
+    if(g_special_map.count(key)){
+        std::lock_guard<std::mutex> guard(g_pressed_mutex);
+        g_is_pressed[g_special_map[key]] = false;
+    }    
+}
+
+bool is_pressed(Key key)
+{
+    std::lock_guard<std::mutex> guard(g_pressed_mutex);
+    return g_is_pressed[key];
+}
+
 void close()
 {
     std::lock_guard<std::mutex> guard(g_grid_mutex);
@@ -137,9 +187,13 @@ void create_and_destroy_grids()
         glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
         glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
         text_grid->id() = glutCreateWindow(text_grid->title().c_str());
-        glutReshapeFunc(&resize);
-        glutDisplayFunc(&display_grid);
-        glutCloseFunc(&close);
+        glutReshapeFunc(resize);
+        glutDisplayFunc(display_grid);
+        glutKeyboardFunc(keyboard);
+        glutKeyboardUpFunc(keyboardup);
+        glutSpecialFunc(special);
+        glutSpecialUpFunc(specialup);
+        glutCloseFunc(close);
         g_grid_map[text_grid->id()] = text_grid;
         g_to_create.pop();
     }

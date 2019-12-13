@@ -122,6 +122,14 @@ PYBIND11_MODULE(_pyglasskey, m)
         .def_property_readonly("height", &Rect::height, "The height in rows")
         .def("__repr__", &Rect::to_string);
 
+    py::enum_<Key>(m, "Key", py::arithmetic())
+        .value("Up", Key::UP)
+        .value("Right", Key::RIGHT)
+        .value("Down", Key::DOWN)
+        .value("Left", Key::LEFT)
+        .value("Space", Key::SPACE)
+        .value("Enter", Key::ENTER);
+
     py::class_<Letter>(m, "Letter", R"gkdoc(
         Class representing a colored ASCII value in a grid.
 
@@ -249,6 +257,15 @@ PYBIND11_MODULE(_pyglasskey, m)
         Args:
             text_grid: the grid to destroy
     )gkdoc");
+    m.def("is_pressed", &is_pressed, R"gkdoc(
+        Whether a key is pressed.
+
+        Args:
+            key: the key to poll
+        
+        Returns:
+            whether the key is pressed
+    )gkdoc", "key"_a);
     m.def("next_frame", &next_frame, R"gkdoc(
         Blocking call that waits for the next frame of animation.
 

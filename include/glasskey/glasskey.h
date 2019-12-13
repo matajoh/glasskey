@@ -125,6 +125,18 @@ void start();
 /** Stops the GL event loop */
 void stop();
 
+enum class Key {
+    UP,
+    RIGHT,
+    LEFT,
+    DOWN,
+    SPACE,
+    ENTER
+};
+
+/** Returns whether a key is pressed */
+bool is_pressed(Key key);
+
 class TextGrid;
 
 /** Creates a new TextGrid.

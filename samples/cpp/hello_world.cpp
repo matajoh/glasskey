@@ -53,6 +53,12 @@ int main(int argc, char *argv[])
         };
         text_grid->draw(ROWS/2, COLS/2, letters);
 
+        if(gk::is_pressed(gk::Key::LEFT)){
+            text_grid->draw(0, 0, "L");
+        }else{
+            text_grid->draw(0, 0, " ");
+        }
+
         // we let GL know that the TextGrid is ready to be redrawn
         text_grid->blit();
 

@@ -1,7 +1,7 @@
 """ glasskey module """
 
 from ._pyglasskey import init, start, stop, create_grid, destroy_grid, Color,\
-    next_frame, Letter, Rect, TextGrid, RowHeight, ColumnWidth
+    next_frame, Letter, Rect, TextGrid, RowHeight, ColumnWidth, Key, is_pressed
 from . import _pyglasskey
 
 class Colors:
