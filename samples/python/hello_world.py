@@ -52,6 +52,7 @@ def _main():
         ]
         text_grid.draw(ROWS//2, COLS//2, letters)
 
+        # key input works via a polling model
         if gk.is_pressed(gk.Key.Left):
             text_grid.draw(0, 0, 'L')
         else:
