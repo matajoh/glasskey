@@ -167,7 +167,7 @@ how to use the library in combination with your own classes. It is provided in:
 - [Python](samples/python/bouncing_balls.py)
 - [Julia](samples/julia/bouncing_balls.jl)
 
-![Bouncing Balls](doc/hello_world.gif)
+![Bouncing Balls](doc/bouncing_balls.gif)
 
 ### Multi-Window
 
