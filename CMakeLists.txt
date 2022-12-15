@@ -43,7 +43,7 @@ ENDIF(MSVC)
 FetchContent_Declare(
   freeglut
   GIT_REPOSITORY https://github.com/matajoh/freeglut.git
-  GIT_TAG 1abdfe03b70fdcd27748acddf806030cb104dcc2
+  GIT_TAG a815cedd2f27588a5b4550697235153782e4d121
 )
 
 FetchContent_Declare(
