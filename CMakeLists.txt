@@ -1,4 +1,6 @@
-cmake_minimum_required( VERSION 3.8 )
+cmake_minimum_required( VERSION 3.15 )
+
+include(FetchContent)
 
 # -------------------- Version --------------------------------
 
@@ -18,9 +20,6 @@ set( GLASSKEY_VERSION ${GLASSKEY_VERSION_MAJOR}.${GLASSKEY_VERSION_MINOR}.${GLAS
 
 project( glasskey VERSION ${GLASSKEY_VERSION} LANGUAGES CXX )
 
-set( BUILD_DOCUMENTATION_DESC "Specifies whether to build the documentation for the API and XML" )
-set( GLASSKEY_BUILD_DOCUMENTATION ON  CACHE BOOL ${BUILD_DOCUMENTATION_DESC} )
-
 set( BUILD_PYTHON_DESC "Specifies whether to build the python module")
 set( GLASSKEY_BUILD_PYTHON ON CACHE BOOL ${BUILD_PYTHON_DESC} )
 
@@ -30,9 +29,8 @@ set( GLASSKEY_BUILD_SHARED_LIB ON CACHE BOOL ${BUILD_SHARED_LIB_DESC})
 set( BUILD_STATIC_LIB_DESC "Specifies whether to build the static library")
 set( GLASSKEY_BUILD_STATIC_LIB ON CACHE BOOL ${BUILD_STATIC_LIB_DESC})
 
-set( WARNINGS_AS_ERRORS OFF )
-
-set (CMAKE_CXX_STANDARD 17)
+set( BUILD_SAMPLES_DESC "Specifies whether to build the samples")
+set( GLASSKEY_BUILD_SAMPLES ON CACHE BOOL ${BUILD_SAMPLES_DESC} )
 
 IF(MSVC)
     SET( CMAKE_DEBUG_POSTFIX "d" )
@@ -42,16 +40,22 @@ ENDIF(MSVC)
 
 ##############################################
 # Declare dependencies
-find_package( FreeGLUT REQUIRED )
+FetchContent_Declare(
+  freeglut
+  GIT_REPOSITORY https://github.com/matajoh/freeglut.git
+  GIT_TAG a815cedd2f27588a5b4550697235153782e4d121
+)
 
-if( GLASSKEY_BUILD_DOCUMENTATION )
-  set( CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR}/libs/doxygen )
-  find_package( Doxygen REQUIRED )
-endif()
+FetchContent_Declare(
+  pybind11
+  GIT_REPOSITORY https://github.com/pybind/pybind11/
+  GIT_TAG        v2.10.1
+)
+
+FetchContent_MakeAvailable(freeglut)
 
 if( GLASSKEY_BUILD_PYTHON )
-  set( CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR}/libs/pybind11 )
-  find_package( pybind11 REQUIRED )
+  FetchContent_MakeAvailable(pybind11)
 endif()
 
 set( SOURCES
@@ -170,19 +174,6 @@ export(PACKAGE glasskey)
 ##############################################
 ## Add subdirectories
 
-add_subdirectory(samples)
-
-
-##############################################
-## Packaging
-
-set(CPACK_PACKAGE_VENDOR "Matthew Johnson")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An OpenGL library for ASCII display")
-set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
-set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
-set(CPACK_RESOURCE_FILE_README ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
-set( CPACK_GENERATOR "ZIP" )
-set( CPACK_SOURCE_GENERATOR "ZIP" )
-include(CPack)
+if( GLASSKEY_BUILD_SAMPLES )
+  add_subdirectory(samples)
+endif()
